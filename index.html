@@ -1,0 +1,1878 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A 13-DoF glove and a direct-drive robot hand built on one skeleton. The glove steers the hand joint for joint. What the hand's fingertips press against is pushed back onto yours.">
+<link rel="canonical" href="https://motorglove.github.io/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Motor Glove">
+<meta property="og:description" content="A 13-DoF glove and a direct-drive robot hand built on one skeleton. The glove steers the hand joint for joint. What the hand's fingertips press against is pushed back onto yours.">
+<meta property="og:url" content="https://motorglove.github.io/">
+<meta property="og:image" content="https://motorglove.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<style>html{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Motor Glove</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Layout: product-page bands (white / mist), 1120px column; every 3D view sits on a studio-grey "stage" tile, a notch darker than the white parts */
+:root{
+  color-scheme:light;
+  --paper:#ffffff; --mist:#f5f5f7; --ink:#0f1114; --ink-2:#3f4550; --muted:#6b7280; --line:#d9dce2; --card:#ffffff;
+  --stage-1:#d5d9e0; --stage-2:#c1c6cf; --stage-3:#a9afbb; --stage-ink:#3c424d;
+  --glove:#ff6a2b; --hand:#0fa37a; --loop:#2f6bff; --axis:#1f5cff;
+  --glove-ink:#b8400c; --hand-ink:#0a7858; --loop-ink:#2b55d6;
+  --off:#4a5160;   /* "feedback off" series: a neutral slate, always dashed and labelled (validated against glove orange and hand green) */
+  --display:"Archivo","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  --text:"Archivo","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --nav-h:52px; --r:20px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--text);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--paper)}
+a{color:inherit}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--loop);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1120px;margin-inline:auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--paper) 84%,transparent);backdrop-filter:saturate(160%) blur(14px);-webkit-backdrop-filter:saturate(160%) blur(14px);border-bottom:1px solid var(--line);color:var(--ink)}
+.nav .wrap{display:flex;align-items:center;gap:20px;min-height:var(--nav-h)}
+.brand{font-family:var(--display);font-stretch:116%;font-weight:700;letter-spacing:-.01em;text-decoration:none;font-size:16px;white-space:nowrap}
+.brand i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--glove);margin-right:9px;box-shadow:14px 0 0 var(--hand);margin-inline-end:24px}
+.nav nav{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.nav nav::-webkit-scrollbar{display:none}
+.nav nav a{font-size:13.5px;color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px;white-space:nowrap}
+.nav nav a:hover{color:var(--ink);background:var(--mist)}
+
+/* bands */
+.band{padding-block:clamp(64px,9vw,120px)}
+
+.band.mist{background:var(--mist)}
+.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+.title{font-family:var(--display);font-stretch:112%;font-weight:650;font-size:clamp(32px,4.6vw,56px);line-height:1.06;letter-spacing:-.022em;text-wrap:balance;margin-top:14px}
+.sub{font-size:clamp(17px,1.5vw,20px);color:var(--ink-2);max-width:62ch;margin-top:18px;text-wrap:pretty}
+
+.head{margin-bottom:clamp(32px,4.5vw,56px)}
+.g-ink{color:var(--glove-ink)} .h-ink{color:var(--hand-ink)}
+
+
+/* hero */
+.hero{background:var(--paper);color:var(--ink);padding-block:clamp(36px,6vw,72px) clamp(40px,6vw,64px)}
+.hero-top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(24px,5vw,72px);align-items:end}
+.hero h1{font-family:var(--display);font-stretch:122%;font-weight:750;font-size:clamp(46px,9.2vw,124px);line-height:.9;letter-spacing:-.035em}
+.hero h1 span{display:block}
+.hero h1 .l2{color:transparent;-webkit-text-stroke:1.5px var(--ink);}
+.lede{font-size:clamp(17px,1.6vw,21px);color:var(--ink-2);max-width:44ch;text-wrap:pretty}
+.lede b{color:var(--ink);font-weight:600}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.chip{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;padding:8px 13px;border-radius:999px;border:1px solid var(--line);color:var(--ink-2);background:var(--mist)}
+.chip small{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.affil{--k:1.75;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:22px clamp(28px,5vw,64px);margin-top:clamp(28px,4vw,44px);padding-block:clamp(20px,2.6vw,30px);border-block:1px solid var(--line)}
+.affil img{display:block;height:calc(var(--h,24px)*var(--k));width:auto;max-width:100%}
+.byline{margin-top:14px;font-size:13.5px;color:var(--muted)}
+
+.stage{position:relative;border-radius:var(--r);overflow:hidden;background:radial-gradient(120% 95% at 50% 6%,var(--stage-1) 0%,var(--stage-2) 52%,var(--stage-3) 100%);border:1px solid var(--line)}
+.stage canvas{display:block;width:100%;height:100%;touch-action:pan-y;cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.stage .ratio{aspect-ratio:var(--ar,16/9);max-width:100%;position:relative}
+.stage .ratio::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(closest-side,rgba(18,22,30,.26),rgba(18,22,30,0)) 50% 93%/34% 9% no-repeat}
+.stage.pair .ratio::before{background:radial-gradient(closest-side,rgba(18,22,30,.24),rgba(18,22,30,0)) 26% 93%/34% 9% no-repeat,radial-gradient(closest-side,rgba(18,22,30,.30),rgba(18,22,30,0)) 74% 93%/34% 9% no-repeat}
+.stage .ratio canvas{position:relative}
+.tag{position:absolute;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--stage-ink);display:flex;align-items:center;gap:8px;pointer-events:none}
+.tag::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+.tag.g{color:var(--glove-ink)} .tag.h{color:var(--ink)}
+.tag span{color:var(--stage-ink)}
+.hint{position:absolute;right:14px;bottom:12px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--stage-ink);pointer-events:none}
+.loading{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;color:var(--stage-ink);text-align:center;padding:20px;pointer-events:none}
+.hero .stage{margin-top:clamp(28px,4vw,44px);--ar:21/9}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:22px;border-top:1px solid var(--line)}
+.stats div{padding:16px 16px 0 0}
+.stats dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.stats dd{font-family:var(--display);font-stretch:112%;font-weight:650;font-size:clamp(22px,2.6vw,34px);letter-spacing:-.02em;margin-top:4px;font-variant-numeric:tabular-nums}
+.stats dd small{font-size:.5em;font-weight:500;color:var(--muted);letter-spacing:0;margin-left:4px}
+
+/* overview */
+.claims{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,44px)}
+.claims li{border-top:2px solid var(--ink);padding-top:18px}
+.claims h3{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:22px;line-height:1.15;letter-spacing:-.01em}
+.claims p{color:var(--ink-2);margin-top:10px;font-size:16px}
+
+/* two-column feature */
+.split{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(20px,3.4vw,48px);align-items:start}
+.split > *{min-width:0}
+.split .stage{--ar:4/3}
+
+/* joint map */
+.fingers{display:grid;gap:16px}
+.finger h3{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500;margin-bottom:8px}
+.jrow{display:flex;flex-wrap:wrap;gap:6px}
+.jbtn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:8px 11px;font-size:14px;cursor:pointer;display:flex;gap:8px;align-items:baseline;transition:border-color .15s,background .15s}
+.jbtn b{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted)}
+.jbtn:hover{border-color:var(--ink-2)}
+.jbtn[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+.jbtn[aria-pressed="true"] b{color:var(--paper);opacity:.7}
+.readout{margin-top:18px;border-top:1px solid var(--line);padding-top:14px;font-size:15px;color:var(--ink-2);min-height:5.2em}
+.readout strong{color:var(--ink);font-weight:600}
+
+/* mechanism viewer */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:transparent;border-radius:999px;padding:8px 15px;font-size:14.5px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.viewer-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;padding:12px 16px;background:color-mix(in srgb,var(--card) 82%,transparent);color:var(--ink);border-top:1px solid var(--line)}
+.viewer-ctl label{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:10px;flex:1 1 220px;min-width:0}
+.viewer-ctl input[type=range]{flex:1;min-width:0;accent-color:var(--glove)}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:13.5px;cursor:pointer;white-space:nowrap}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.mech-text h3{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:26px;line-height:1.12;letter-spacing:-.015em}
+.mech-text p{color:var(--ink-2);margin-top:12px}
+.dofs{margin-top:18px;display:grid;gap:8px}
+.dofs li{display:flex;align-items:center;gap:10px;font-size:15px}
+.dofs i{width:22px;height:4px;border-radius:2px;flex:none}
+.dofs i.v{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 8px)!important}
+.facts{margin-top:18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 20px;border-top:1px solid var(--line);padding-top:16px}
+.facts dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.facts dd{font-family:var(--display);font-weight:650;font-size:22px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+/* spec table */
+.tablebox{overflow-x:auto;margin-top:clamp(36px,5vw,64px)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:15.5px}
+th,td{text-align:left;padding:12px 14px 12px 0;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:500;color:var(--muted);border-bottom:2px solid var(--ink)}
+tbody th{font-weight:500;color:var(--muted);width:24%}
+td{font-variant-numeric:tabular-nums}
+
+/* control */
+.diagram{overflow-x:auto;border-radius:var(--r);background:var(--card);border:1px solid var(--line)}
+.diagram svg{display:block;min-width:900px;width:100%;height:auto}
+.d-box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.d-pc{fill:none;stroke:var(--muted);stroke-width:1.2;stroke-dasharray:5 6}
+.d-t{font-family:var(--display);font-weight:650;font-size:17px;fill:var(--ink)}
+.d-s{font-family:var(--text);font-size:13.5px;fill:var(--ink-2)}
+.d-m{font-family:var(--mono);font-size:12px;fill:var(--muted);letter-spacing:.04em}
+.flow{fill:none;stroke-width:2.2;stroke-dasharray:7 9;animation:flow 1.1s linear infinite}
+.flow.g{stroke:var(--glove)} .flow.h{stroke:var(--hand)} .flow.k{stroke:var(--ink-2)} .flow.w{stroke:var(--loop)}
+.cap.g{fill:var(--glove)} .cap.h{fill:var(--hand)} .cap.k{fill:var(--ink-2)} .cap.w{fill:var(--loop)}
+@keyframes flow{to{stroke-dashoffset:-16}}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.4vw,28px);margin-top:clamp(28px,4vw,48px)}
+.mode{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(20px,2.6vw,32px);min-width:0}
+.mode .who{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.mode .who::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor}
+.mode h3{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:clamp(22px,2.3vw,28px);line-height:1.12;letter-spacing:-.015em;margin-top:12px}
+.mode h3 em{font-style:normal;color:var(--muted);font-weight:500}
+.mode ol{margin-top:16px;display:grid;gap:12px;counter-reset:n}
+.mode ol li{display:grid;grid-template-columns:auto 1fr;gap:12px;font-size:15.5px;color:var(--ink-2)}
+.mode ol li::before{counter-increment:n;content:counter(n);font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:50%;width:22px;height:22px;display:grid;place-items:center;margin-top:1px}
+.mode ol b{color:var(--ink);font-weight:600}
+.plot{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+.plot h4{margin:0 0 4px;font-size:14px;font-weight:600}
+.plot p{font-size:13px;color:var(--muted)}
+.plot svg{display:block;width:100%;height:auto;margin-top:8px;overflow:visible}
+.ax{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+.lab{font-family:var(--text);font-size:12.5px;fill:var(--ink)}
+.steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2.4vw,28px);margin-top:clamp(28px,4vw,48px);counter-reset:s}
+.step{border-top:2px solid var(--ink);padding-top:16px;min-width:0}
+.step .n{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.step h3{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:22px;line-height:1.15;letter-spacing:-.01em;margin-top:6px}
+.step p{color:var(--ink-2);font-size:15.5px;margin-top:10px}
+.eq{font-family:var(--mono);font-size:13.5px;background:var(--mist);border-radius:10px;padding:10px 12px;margin-top:12px;overflow-x:auto;white-space:nowrap;color:var(--ink)}
+.mist .eq{background:var(--card)}
+.mist .traces{background:var(--card)}
+.kv{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:14px;color:var(--ink-2)}
+.kv b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.note{margin-top:clamp(24px,3vw,40px);font-size:14px;color:var(--muted);max-width:76ch}
+
+/* replay */
+.replay .stage{--ar:21/9}
+.traces{display:block;width:100%;height:210px;margin-top:14px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.transport{display:flex;align-items:center;gap:14px;margin-top:12px}
+.transport input{flex:1;min-width:0;accent-color:var(--ink)}
+.transport output{font-family:var(--mono);font-size:13px;color:var(--muted);min-width:8ch;text-align:right}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:14px;font-size:14px;color:var(--ink-2)}
+.clipnote{margin:0 0 14px;color:var(--ink-2);font-size:15.5px;min-height:1.6em}
+.proc{margin-top:10px;font-size:13.5px;color:var(--muted);max-width:86ch}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:8px}
+
+/* media slots */
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.slot{aspect-ratio:16/10;max-width:100%;border:1.5px dashed var(--line);border-radius:var(--r);display:grid;place-content:center;gap:6px;text-align:center;padding:18px;color:var(--muted);background:repeating-linear-gradient(135deg,transparent 0 14px,color-mix(in srgb,var(--line) 35%,transparent) 14px 15px)}
+.slot b{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.slot span{font-size:15px;color:var(--ink-2);max-width:26ch}
+.slot.wide{grid-column:span 2;aspect-ratio:auto}
+/* one full policy run, sped up, above the placeholders */
+.run{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(18px,3vw,40px);align-items:center;margin:0 0 clamp(28px,4vw,44px)}
+.run > *{min-width:0}
+.run-cap h3{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:clamp(24px,2.6vw,32px);line-height:1.1;letter-spacing:-.015em;text-wrap:balance}
+.run-cap p{color:var(--ink-2);margin-top:10px;font-size:16px}
+.run-cap p.small{font-size:13.5px;color:var(--muted);margin-top:14px}
+.run-tabs{margin:0 0 14px}
+.run-main{min-width:0}
+.runline{flex:1;min-width:0;height:64px;cursor:pointer;touch-action:none}
+.runline svg{display:block;width:100%;height:64px;overflow:visible}
+.legend .k-sq{font-size:11px;color:var(--ink);margin-right:8px;font-weight:500}
+.run-legend{margin-top:10px;font-size:13.5px}
+.legend i.k-carry{height:10px;width:14px;background:var(--hand)}
+.legend i.k-miss{height:10px;width:14px;background:transparent;box-shadow:inset 0 0 0 2px var(--off)}
+.legend i.k-fb{height:10px;width:14px;background:color-mix(in srgb,var(--glove) 24%,transparent)}
+.legend i.k-slow{height:10px;width:14px;background:color-mix(in srgb,var(--ink) 13%,transparent)}
+.legend i.k-snap{height:14px;width:2px;border-radius:0;background:repeating-linear-gradient(180deg,var(--ink) 0 3px,transparent 3px 6px)}
+.vtag.speed{transition:background .15s,color .15s}
+.vtag.speed.slow{background:var(--ink);color:var(--paper)}
+.demo-vid.wide{aspect-ratio:964/480}
+.runline.tall,.runline.tall svg{height:136px}
+.legend i.k-empty{height:10px;width:14px;background:repeating-linear-gradient(135deg,var(--off) 0 2px,transparent 2px 5px);box-shadow:inset 0 0 0 1px var(--off)}
+@media (max-width:900px){ .run{grid-template-columns:minmax(0,1fr)} }
+
+.next{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,3vw,40px)}
+.next li{border-top:1px solid var(--line);padding-top:16px}
+.next h3{font-size:18px;font-weight:600}
+.next p{color:var(--ink-2);font-size:15.5px;margin-top:6px}
+footer{background:var(--mist);color:var(--muted);font-size:13.5px;padding-block:28px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+
+/* demonstrations: averaged pinch currents + one synced clip per group */
+.dstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,2.4vw,28px);margin-bottom:clamp(28px,4vw,44px)}
+.dstats div{border-top:2px solid var(--ink);padding-top:14px;min-width:0}
+.dstats dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.dstats dd{font-family:var(--display);font-stretch:112%;font-weight:650;font-size:clamp(32px,3.8vw,48px);line-height:1.08;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.dstats dd small{font-size:.4em;font-weight:500;color:var(--muted);letter-spacing:0;margin:0 4px}
+.dstats p{font-size:14.5px;color:var(--ink-2);margin-top:8px}
+.avg{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(16px,2.4vw,28px);position:relative;min-width:0}
+.avg .legend{margin-top:0}
+.avg-plot{position:relative;margin-top:12px;min-height:380px}
+.avg-plot svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.avg-plot .loadmsg{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.legend i.dash{background:repeating-linear-gradient(90deg,var(--off) 0 6px,transparent 6px 10px)}
+.legend i.ci{height:10px;background:color-mix(in srgb,var(--ink) 13%,transparent)}
+.tip{position:absolute;z-index:2;pointer-events:none;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 11px;font-size:12.5px;box-shadow:0 8px 22px rgba(15,17,20,.12);min-width:200px}
+.tip .h{font-family:var(--mono);color:var(--muted);margin-bottom:4px}
+.tip .r{display:flex;justify-content:space-between;gap:14px;color:var(--ink-2)}
+.tip .r span{display:flex;align-items:center;gap:7px}
+.tip .r b{font-family:var(--mono);font-weight:500;color:var(--ink)}
+.tip i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.tip i.d{background:repeating-linear-gradient(90deg,var(--off) 0 4px,transparent 4px 7px)!important}
+.avg-table summary{cursor:pointer;font-size:14px;color:var(--ink-2);margin-top:14px;width:max-content}
+.avg-table .tablebox{margin-top:10px}
+.demo-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 20px;margin-top:clamp(44px,6vw,72px);margin-bottom:16px}
+.demo-head h3{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:clamp(24px,2.6vw,32px);line-height:1.1;letter-spacing:-.015em}
+.demo-head p{color:var(--ink-2);font-size:15.5px;margin-top:6px;max-width:60ch}
+.demo-head .tabs{margin:0}
+.doer{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);padding:4px 9px;border-radius:6px;margin:0 0 10px!important;max-width:none!important}
+.doer.human{background:color-mix(in srgb,var(--glove) 16%,transparent)}
+.doer.robot{background:color-mix(in srgb,var(--loop) 14%,transparent)}
+.demo-head.task-first{margin-top:0}
+.demo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(16px,2.4vw,28px);align-items:stretch}
+.demo > *{min-width:0}
+.demo-vid{position:relative;border-radius:var(--r);overflow:hidden;background:var(--ink);aspect-ratio:4/3;max-width:100%}
+.demo-vid video{display:block;width:100%;height:100%;object-fit:cover}
+.vtag{position:absolute;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;background:color-mix(in srgb,var(--paper) 88%,transparent);color:var(--ink);padding:4px 8px;border-radius:6px;pointer-events:none}
+.demo-side{display:flex;flex-direction:column;min-width:0}
+.demo-side .traces{height:320px;margin-top:0}
+.demo-side .clipnote{margin:12px 0 0;min-height:3.2em}
+/* policy rollouts: one dot per run / per demonstration, grip current on one axis */
+.pol-plot{position:relative;margin-top:12px;min-height:220px}
+.pol-plot svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y}
+.legend i.dot{width:10px;height:10px;border-radius:50%;background:var(--hand)}
+.legend i.ring{width:10px;height:10px;border-radius:50%;background:transparent;box-shadow:inset 0 0 0 2px var(--hand)}
+.legend i.tick{width:2px;height:14px;border-radius:1px;background:var(--ink)}
+.legend i.floor{height:10px;background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.legend i.dash-ink{background:repeating-linear-gradient(90deg,var(--ink-2) 0 6px,transparent 6px 10px)}
+.pol-curve{min-height:280px}
+.tip .r i.o{width:9px;height:9px;border-radius:50%}
+
+@media (max-width:900px){
+  .dstats,.demo{grid-template-columns:minmax(0,1fr)}
+  .demo-side .traces{height:280px}
+}
+
+@media (max-width:900px){
+  .hero-top,.split,.modes,.steps,.next{grid-template-columns:minmax(0,1fr)}
+  .claims{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .slots{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hero .stage,.replay .stage{--ar:4/3}
+  .slot.wide{grid-column:span 2}
+}
+@media (max-width:520px){
+  .affil{--k:1.3;gap:18px 24px}
+  body{font-size:16px}
+  .slots{grid-template-columns:minmax(0,1fr)} .slot.wide{grid-column:auto}
+  .facts{grid-template-columns:minmax(0,1fr)}
+  .nav nav a{padding:8px 7px}
+}
+@media (prefers-reduced-motion:reduce){ .flow{animation:none} html{scroll-behavior:auto} }
+</style>
+</head>
+<body>
+
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><i></i>Motor Glove</a>
+    <nav aria-label="Sections">
+      <a href="#skeleton">One skeleton</a>
+      <a href="#mechanism">Mechanism</a>
+      <a href="#control">Control</a>
+      <a href="#replay">Replay</a>
+      <a href="#demos">Teleoperation</a>
+      <a href="#policy">Policies</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <h1><span>Motor</span><span class="l2">Glove</span></h1>
+      <div>
+        <p class="lede"><b>A 13-DoF glove and a direct-drive robot hand built on one skeleton.</b> The glove steers the hand joint for joint. What the hand's fingertips press against is pushed back onto yours.</p>
+        <div class="links" aria-label="Resources">
+          <span class="chip">Paper <small>soon</small></span>
+          <span class="chip">Code &amp; firmware <small>soon</small></span>
+          <span class="chip">CAD <small>soon</small></span>
+        </div>
+      </div>
+    </div>
+
+    <ul class="affil" aria-label="Affiliations">
+      <li><img src="assets/logos/mit.svg" alt="MIT" style="--h:21px"></li>
+      <li><img src="assets/logos/harvard.svg" alt="Harvard University" style="--h:30px"></li>
+      <li><img src="assets/logos/hkust.svg" alt="The Hong Kong University of Science and Technology" style="--h:30px"></li>
+      <li><img src="assets/logos/stanford.svg" alt="Stanford University" style="--h:21px"></li>
+    </ul>
+
+    <div class="stage pair" id="heroStage">
+      <div class="ratio"><canvas id="cvHero" aria-label="Interactive 3D model of the glove and the robot hand replaying a recorded teleoperation session. Drag to rotate."></canvas></div>
+      <div class="tag g" style="left:16px;top:14px">Glove <span>leader</span></div>
+      <div class="tag h" style="right:16px;top:14px">Hand <span>follower</span></div>
+      <div class="hint">drag to rotate · recorded motion</div>
+      <div class="loading" id="heroLoading">loading CAD · 2.5 MB</div>
+    </div>
+
+    <dl class="stats">
+      <div><dt>Joints per device</dt><dd>13</dd></div>
+      <div><dt>Servos, all XL330</dt><dd>26</dd></div>
+      <div><dt>Control loop</dt><dd>540<small>Hz</small></dd></div>
+      <div><dt>Bus, both sides</dt><dd>3<small>Mbps</small></dd></div>
+      <div><dt>Glove mass, CAD</dt><dd>478<small>g</small></dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="band" style="padding-top:0">
+  <div class="wrap">
+    <ul class="claims">
+      <li><h3>Joint for joint, no retargeting</h3><p>The hand repeats the glove's 13 joint axes: all parallel in CAD, ten exactly coincident, the middle finger's within 4 mm. A glove angle is a hand angle, with nothing solved in between.</p></li>
+      <li><h3>Force at the fingertip</h3><p>Feedback is computed where contact happens and spread over the finger with the Jacobian. Per-joint springs cancel out in a pinch; this does not.</p></li>
+      <li><h3>Stiff to squeeze, free to twist</h3><p>Once two fingers hold an object, their pinch distance is held by the servos' own position loops. Rolling and twisting stay free.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="band mist" id="skeleton">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">One skeleton</p>
+      <h2 class="title">Thirteen joints, built twice.</h2>
+      <p class="sub">Four fingers. The thumb has four joints, the index, middle and ring fingers three each. Pick a joint to see the same axis on both machines.</p>
+    </div>
+    <div class="split">
+      <div class="stage pair">
+        <div class="ratio"><canvas id="cvIso" aria-label="3D view of glove and hand with the selected joint axis highlighted on both"></canvas></div>
+        <div class="tag g" style="left:16px;top:14px">Glove</div>
+        <div class="tag h" style="right:16px;top:14px">Hand</div>
+        <div class="hint">drag to rotate</div>
+      </div>
+      <div>
+        <div class="fingers" id="jointMap"></div>
+        <p class="readout" id="jointReadout" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="mechanism">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Mechanism</p>
+      <h2 class="title">Linkages put each axis where your joint is.</h2>
+      <p class="sub">A glove cannot place a motor inside your hand. Closed-chain linkages carry the servos to the back of the fingers and still turn each segment about the anatomical axis. The robot hand keeps the axes and drops the linkages.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Glove modules">
+      <button class="tab" role="tab" id="tab-mid_mcp" aria-selected="true" data-mod="mid_mcp">Middle-finger MCP</button>
+      <button class="tab" role="tab" id="tab-thumb" aria-selected="false" data-mod="thumb">Thumb</button>
+      <button class="tab" role="tab" id="tab-index_mcp" aria-selected="false" data-mod="index_mcp">Index MCP</button>
+    </div>
+    <div class="split">
+      <div class="stage">
+        <div class="ratio"><canvas id="cvMech" aria-label="3D view of the selected glove module. Drag to rotate; use the slider to explode the assembly."></canvas></div>
+        <div class="hint" style="top:14px;bottom:auto">drag to rotate</div>
+        <div class="viewer-ctl">
+          <label for="explode">Explode <input type="range" id="explode" min="0" max="100" value="60"></label>
+          <button class="btn" id="motionBtn" aria-pressed="false">Play motion</button>
+        </div>
+      </div>
+      <div class="mech-text" id="mechText" aria-live="polite"></div>
+    </div>
+
+    <div class="tablebox">
+      <table>
+        <thead><tr><th></th><th class="g-ink">Glove · leader</th><th class="h-ink">Hand · follower</th></tr></thead>
+        <tbody>
+          <tr><th>Actuated joints</th><td>13</td><td>13, same axes</td></tr>
+          <tr><th>Servos</th><td>9 × XL330-M288, 4 × XL330-M077 at PIP / IP</td><td>13 × XL330-M288</td></tr>
+          <tr><th>Transmission</th><td>Closed-chain linkages around the finger</td><td>Direct drive, one servo per joint</td></tr>
+          <tr><th>Control mode</th><td>Voltage (PWM)</td><td>On-motor position loop, current-limited</td></tr>
+          <tr><th>Bus</th><td>OpenRB-150 with our 3 Mbps DMA bridge firmware</td><td>U2D2, 3 Mbps</td></tr>
+          <tr><th>Force sensing</th><td>Motor current</td><td>Motor current</td></tr>
+          <tr><th>Mass, CAD</th><td>478 g</td><td>441 g</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="band mist" id="control">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Control</p>
+      <h2 class="title">One loop, two servo modes.</h2>
+      <p class="sub">A PC closes the loop over both buses about 540 times a second. The glove's servos take voltage commands. The hand's servos run their own position loop. Each choice follows from a delay we measured.</p>
+    </div>
+
+    <div class="diagram" role="img" aria-label="Control diagram. Glove angles pass through a joint map with early closing to become hand targets. Hand angles and currents feed contact detection, then fingertip force, then the voltage law that drives the glove. While a pinch is locked, a proxy wall sends position targets to seven glove joints.">
+      <svg viewBox="0 0 1120 470" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="aG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap g" d="M0 0L10 5L0 10z"/></marker>
+          <marker id="aH" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap h" d="M0 0L10 5L0 10z"/></marker>
+          <marker id="aK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap k" d="M0 0L10 5L0 10z"/></marker>
+          <marker id="aW" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap w" d="M0 0L10 5L0 10z"/></marker>
+        </defs>
+        <rect class="d-pc" x="232" y="18" width="656" height="434" rx="22"/>
+        <text class="d-m" x="252" y="44">PC LOOP · ~540 HZ · 1.6 MS P99 PERIOD · REAL-TIME THREAD</text>
+
+        <rect class="d-box" x="18" y="150" width="176" height="170" rx="16" style="stroke:var(--glove)"/>
+        <text class="d-t" x="36" y="184">Glove</text>
+        <text class="d-m" x="36" y="204">LEADER</text>
+        <text class="d-s" x="36" y="236">13 × XL330</text>
+        <text class="d-s" x="36" y="258">voltage (PWM) mode</text>
+        <text class="d-s" x="36" y="280">7 joints switch to</text>
+        <text class="d-s" x="36" y="300">position when locked</text>
+
+        <rect class="d-box" x="926" y="150" width="176" height="170" rx="16" style="stroke:var(--hand)"/>
+        <text class="d-t" x="944" y="184">Hand</text>
+        <text class="d-m" x="944" y="204">FOLLOWER</text>
+        <text class="d-s" x="944" y="236">13 × XL330-M288</text>
+        <text class="d-s" x="944" y="258">on-motor position loop</text>
+        <text class="d-s" x="944" y="280">current-limited</text>
+        <text class="d-s" x="944" y="300">touches the object</text>
+
+        <rect class="d-box" x="400" y="64" width="320" height="86" rx="14"/>
+        <text class="d-t" x="418" y="96">Joint map + early closing</text>
+        <text class="d-s" x="418" y="118">1:1 angles; the hand closes 9–11.5 mm early</text>
+        <text class="d-s" x="418" y="137">to take up the give in the printed linkages</text>
+
+        <rect class="d-box" x="690" y="210" width="182" height="104" rx="14"/>
+        <text class="d-t" x="706" y="240">Contact detection</text>
+        <text class="d-s" x="706" y="262">current residual vs a</text>
+        <text class="d-s" x="706" y="281">free-motion model</text>
+        <text class="d-m" x="706" y="302">25–29 mA · 30 ms</text>
+
+        <rect class="d-box" x="470" y="210" width="182" height="104" rx="14"/>
+        <text class="d-t" x="486" y="240">Fingertip force</text>
+        <text class="d-s" x="486" y="262">penetration at the tip,</text>
+        <text class="d-s" x="486" y="281">one-sided spring</text>
+        <text class="d-m" x="486" y="302">τ = J_gloveᵀ F</text>
+
+        <rect class="d-box" x="250" y="210" width="182" height="104" rx="14"/>
+        <text class="d-t" x="266" y="240">Voltage law</text>
+        <text class="d-s" x="266" y="262">torque + friction and</text>
+        <text class="d-s" x="266" y="281">back-EMF feed-forward</text>
+        <text class="d-m" x="266" y="302">→ PWM duty</text>
+
+        <rect class="d-box" x="360" y="356" width="400" height="74" rx="14" style="stroke:var(--loop)"/>
+        <text class="d-t" x="378" y="386">Pinch lock on a proxy wall</text>
+        <text class="d-s" x="378" y="408">glove pose with the pad distance restored → position targets</text>
+
+        <path class="flow g" marker-end="url(#aG)" d="M150 150 C150 100 300 107 394 107"/>
+        <text class="d-m" x="60" y="132">q glove</text>
+        <path class="flow h" marker-end="url(#aH)" d="M720 107 C840 107 990 100 990 144"/>
+        <text class="d-m" x="1010" y="132">q target</text>
+        <path class="flow h" marker-end="url(#aH)" d="M926 262 L878 262"/>
+        <path class="flow k" marker-end="url(#aK)" d="M690 262 L658 262"/>
+        <path class="flow k" marker-end="url(#aK)" d="M470 262 L438 262"/>
+        <path class="flow g" marker-end="url(#aG)" d="M250 262 L200 262"/>
+        <path class="flow w" marker-end="url(#aW)" d="M561 314 L561 350"/>
+        <path class="flow w" marker-end="url(#aW)" d="M360 393 C200 393 106 380 106 326"/>
+        <text class="d-m" x="60" y="420">wall targets</text>
+        <path class="flow w" marker-end="url(#aW)" d="M760 393 C930 393 1014 380 1014 326"/>
+        <text class="d-m" x="970" y="420">grip targets</text>
+      </svg>
+    </div>
+
+    <div class="modes">
+      <article class="mode">
+        <p class="who g-ink">Glove</p>
+        <h3>Voltage mode, <em>not current mode</em></h3>
+        <ol>
+          <li><span><b>Current mode removes the motor's own damping.</b> The servo's current loop cancels back-EMF. On the M077 that leaves 0.45 mN·m·s/rad.</span></li>
+          <li><span><b>A late spring is a negative damper.</b> Commands reach the rotor about 7 ms late. A virtual spring of 0.8 N·m/rad through that delay takes out 5.6 mN·m·s/rad. The joint rang at 6.6 Hz and jumped when released.</span></li>
+          <li><span><b>Voltage mode keeps back-EMF in the circuit, with no delay.</b> It gives 21 mN·m·s/rad on the M288 and 1.3–1.8 on the M077. We cancel it in software while the hand moves freely, so the glove stays light, and let it act once contact is detected.</span></li>
+        </ol>
+        <div class="plot">
+          <h4>Damping available against damping a delayed spring removes</h4>
+          <p>mN·m·s/rad, measured on our servos. The dashed line is K·T for K = 0.8 N·m/rad, T = 7 ms.</p>
+          <svg id="dampPlot" viewBox="0 0 520 168" role="img" aria-label="Bar chart. Current mode M077 0.45; voltage mode M077 1.3 to 1.8; voltage mode M288 21. Threshold 5.6."></svg>
+          <p>The M077 joints (PIP, IP) stay below the line even in voltage mode. They get a lower stiffness cap and a 15 Hz torque filter.</p>
+        </div>
+      </article>
+      <article class="mode">
+        <p class="who h-ink">Hand</p>
+        <h3>On-motor position loop, <em>not a torque loop on the PC</em></h3>
+        <ol>
+          <li><span><b>A torque loop through the bus is too slow.</b> Closed on the PC it sees about 14 ms round trip and self-oscillates above 8 Hz.</span></li>
+          <li><span><b>The servo's own loop has no bus in it.</b> The XL330 runs current-limited position control internally. The PC only moves the target.</span></li>
+          <li><span><b>Force is still commanded, through the target.</b> Past contact the servo turns error into current, I = P·e / 256 mA per encoder tick. We add three times the glove's penetration to the target, so a harder squeeze is a harder grip.</span></li>
+        </ol>
+        <div class="plot">
+          <h4>Hand current against how far the operator squeezes into the wall</h4>
+          <p>mA, thumb plus opposing finger, medians per depth bin from a 568 s recording.</p>
+          <svg id="gripPlot" viewBox="0 0 520 168" role="img" aria-label="Bar chart. Squeeze 0 to 1 mm: 112 mA. 2 to 3 mm: 279 mA. 4.5 to 7 mm: 651 mA."></svg>
+          <p>Glove current rises with it: 27, 68, 147 mA on the M288 joints.</p>
+        </div>
+      </article>
+    </div>
+
+    <div class="steps">
+      <article class="step">
+        <p class="n">Step 1 · detect</p>
+        <h3>Notice contact in tens of milliseconds</h3>
+        <p>Each hand joint has a model of the current it draws in free motion: Coulomb and viscous friction, inertia, gravity. Contact is suspected when the residual passes 25–29 mA, and confirmed when the joint has actually stopped with its target still ahead for 30 ms.</p>
+        <div class="kv"><span>threshold <b>150 → 25–29 mA</b></span><span>latency in simulation <b>291 → 24–43 ms</b></span></div>
+      </article>
+      <article class="step">
+        <p class="n">Step 2 · render</p>
+        <h3>Compute the force at the fingertip</h3>
+        <p>In a pinch, six or seven joints are each off by a degree or less. Springs on each joint add up to almost nothing at the pads. We take the hand's fingertip penetration, apply a one-sided spring there, and map it back through the glove's Jacobian.</p>
+        <div class="eq">p = J_hand (q_target − q_hand)<br>F = −k p<br>τ = J_gloveᵀ F</div>
+        <div class="kv"><span>k <b>1000 N/m</b>, up to <b>8 N</b> per finger</span><span>thumb–middle separating force <b>0.05 → 0.84 N</b></span></div>
+      </article>
+      <article class="step">
+        <p class="n">Step 3 · lock</p>
+        <h3>Hold the pinch on a wall that follows you</h3>
+        <p>A spring sent through a 14 ms loop cannot be made stiff. When thumb and finger both press on an object, their seven glove joints switch to the servos' position loop. Every cycle the wall is reset to the glove's current pose with only the pad distance restored, weighted by each motor's torque constant so the reaction is a pure force along the pinch line.</p>
+        <div class="eq">q_wall ← q − (w∘c) · c·(q − q_wall) / c·(w∘c)<br>c = ∂d/∂q, the pad distance's gradient · w = 1/K_t</div>
+        <div class="kv"><span>tangential error while locked <b>0.25°</b> (95th pct)</span><span>object rotation per pinch, feedback vs none: index <b>32° vs 22°</b>, middle <b>45° vs 41°</b>, ring <b>34° vs 25°</b></span></div>
+      </article>
+      <article class="step">
+        <p class="n">Step 4 · admit</p>
+        <h3>Lock only a real grasp</h3>
+        <p>Three checks came out of replaying 71 recorded locks. Both fingers must press toward each other. There must be something between the hand's fingertips, judged by the signed gap between their CAD hulls. And the lock releases when the object is gone, judged by a signed aperture so that a hard squeeze is never mistaken for it.</p>
+        <div class="kv"><span>zero offsets from self-contact: glove <b>0.5 mm</b>, hand <b>1.1 mm RMS</b></span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band replay" id="replay">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Replay</p>
+      <h2 class="title">One recorded session, replayed.</h2>
+      <p class="sub">Six clips from a 568-second recording with feedback on. Both models follow the logged joint angles. The lanes show motor current on each side, processed the same way, and when the pinch was locked.</p>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Recorded clips" id="clipTabs"></div>
+    <p class="clipnote" id="clipNote" aria-live="polite"></p>
+    <div class="stage pair">
+      <div class="ratio"><canvas id="cvReplay" aria-label="3D replay of glove and hand from a recorded log"></canvas></div>
+      <div class="tag g" style="left:16px;top:14px">Glove <span>logged motor angles</span></div>
+      <div class="tag h" style="right:16px;top:14px">Hand <span>logged joint angles</span></div>
+      <div class="hint">drag to rotate</div>
+    </div>
+    <canvas class="traces" id="cvTraces" aria-label="Time traces of hand current, glove current and lock state"></canvas>
+    <div class="transport">
+      <button class="btn" id="playBtn" aria-pressed="true">Pause</button>
+      <input type="range" id="scrub" min="0" max="1000" value="0" aria-label="Replay position">
+      <output id="clock" for="scrub">0.0 s</output>
+    </div>
+    <div class="legend">
+      <span><i style="background:var(--hand)"></i>hand motor current</span>
+      <span><i style="background:var(--glove)"></i>glove motor current</span>
+      <span><i style="background:var(--loop);opacity:.35;height:10px"></i>pinch locked</span>
+    </div>
+    <p class="proc">Both lanes get the same processing: rectified motor current, low-passed at 4.5 Hz, summed over the pinching pair. Each lane has its own axis, in mA. Nothing is retimed.</p>
+  </div>
+</section>
+
+<section class="band mist" id="demos">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Teleoperation</p>
+      <h2 class="title">With feedback, a lighter grip.</h2>
+      <p class="sub">A person wears the glove and drives the robot hand. We recorded two tasks, picking up potato chips and picking blueberries into a bowl, each with feedback on and with it off. Line every pinch up at the moment the fingers close, and the difference shows in the motor currents on both sides.</p>
+    </div>
+    <div class="demo-head task-first" id="chips">
+      <div>
+        <p class="doer human">Teleoperated · a person wears the glove</p>
+        <h3>Task 1: potato chips, thumb and ring finger</h3>
+        <p>A chip is light, stiff and brittle, and it lies flat on the box. The hand pinches it between the thumb and the ring finger and carries it to a bowl, two chips per demonstration. With feedback on, no chip broke; with it off, two did.</p>
+      </div>
+    </div>
+    <dl class="dstats">
+      <div><dt>Push-back felt at the glove</dt><dd>+59<small>mA</small></dd><p>Glove current 2 s into a pinch, above its level just before. With feedback off: −3 mA.</p></div>
+      <div><dt>Hand grip current</dt><dd>−46<small>%</small></dd><p>150 mA with feedback, 278 mA without. Median per demonstration, p &lt; 0.001.</p></div>
+      <div><dt>Target past the measured angle</dt><dd>1.7°<small>vs</small>3.4°</dd><p>How far the hand is told to close beyond where the chip stops it, with and without feedback. p &lt; 0.001.</p></div>
+    </dl>
+    <figure class="avg" id="chipFig">
+      <div class="legend" aria-hidden="true">
+        <span><i style="background:var(--glove)"></i>glove, feedback on</span>
+        <span><i style="background:var(--hand)"></i>hand, feedback on</span>
+        <span><i class="dash"></i>feedback off</span>
+        <span><i class="ci"></i>95% confidence band</span>
+      </div>
+      <div class="avg-plot" id="chipAvg" role="img" aria-label="Mean motor current around a chip pinch, two lanes. Glove: with feedback on it rises from about 55 to 115 mA by 2 s; with feedback off it stays near 50 mA. Hand: with feedback on it rises to about 165 mA; with feedback off to about 315 mA."><p class="loadmsg" id="chipLoad">loading</p></div>
+      <div class="tip" id="chipAvgTip" hidden></div>
+      <figcaption class="proc">Mean over the pinches of each group, aligned at the moment the ring finger closes, summed over the thumb and ring-finger motors. Bands are 95% intervals.</figcaption>
+      <details class="avg-table"><summary>Show the numbers</summary><div class="tablebox" id="chipTable"></div></details>
+    </figure>
+    <div class="demo-head">
+      <div>
+        <h3>A clean demonstration, and the two chips that broke</h3>
+        <p>First a whole feedback-on demonstration. Then the two feedback-off pinches in which a chip broke, slowed to one-eighth speed around the break.</p>
+      </div>
+      <div class="tabs chip-tabs" role="tablist" aria-label="Chip demonstrations">
+        <button class="tab" role="tab" data-chip="on" aria-selected="true">Feedback on</button>
+        <button class="tab" role="tab" data-chip="break1" aria-selected="false">Feedback off: a chip snaps</button>
+        <button class="tab" role="tab" data-chip="break2" aria-selected="false">Feedback off: a chip shatters</button>
+      </div>
+    </div>
+    <figure class="run chip-run">
+      <div class="run-main">
+        <div class="demo-vid wide">
+          <video id="chipVid" src="assets/clips/chip_on.mp4" muted playsinline loop preload="metadata" aria-label="Side camera close-up of the robot hand picking two potato chips off a box into a bowl, with the head and wrist cameras beside it, two times real speed"></video>
+          <span class="vtag" style="left:12px;top:12px" id="chipTagMain">Side camera</span>
+          <span class="vtag" style="left:calc(66.8% + 8px);top:10px" id="chipTagTop">Head</span>
+          <span class="vtag" style="left:calc(66.8% + 8px);top:calc(50% + 8px)" id="chipTagBot">Wrist</span>
+          <span class="vtag speed" style="left:12px;bottom:12px" id="chipSpeed">2× speed</span>
+        </div>
+        <div class="transport">
+          <button class="btn" id="chipPlay" aria-pressed="true">Pause</button>
+          <div class="runline tall" id="chipLine" role="slider" tabindex="0" aria-label="Position in the clip" aria-valuemin="0" aria-valuenow="0"></div>
+          <output id="chipClock">0 s</output>
+        </div>
+        <div class="legend run-legend" aria-hidden="true">
+          <span><i style="background:var(--glove);height:2px"></i>glove current</span>
+          <span><i style="background:var(--hand);height:2px"></i>hand current</span>
+          <span class="only-on"><i class="k-fb"></i>glove rendering contact</span>
+          <span class="only-on"><i class="k-carry"></i>chip carried to the bowl</span>
+          <span class="only-break" hidden><i class="k-slow"></i>shown in slow motion</span>
+          <span class="only-break" hidden><i class="k-snap"></i>chip breaks</span>
+        </div>
+      </div>
+      <figcaption class="run-cap">
+        <h3 id="chipH">Feedback on: two chips, uncut</h3>
+        <p id="chipP">The large view is the side camera, level with the box top. It shows how far the fingertips are above the chip. The glove pushes back each time the fingers meet a chip, and the hand current stays low.</p>
+        <dl class="facts" id="chipFacts"></dl>
+        <p class="small">The three cameras are synchronized frame for frame. The current axes are the same in all three clips.</p>
+      </figcaption>
+    </figure>
+
+    <div class="demo-head" id="berries">
+      <div>
+        <p class="doer human">Teleoperated · a person wears the glove</p>
+        <h3>Task 2: blueberries, thumb and middle finger</h3>
+        <p>A blueberry is small and soft. Here the pinch is between the thumb and the middle finger, so the feedback has to reach a different finger. 140 demonstrations, 70 with feedback on and 70 with it off, three berries each.</p>
+      </div>
+    </div>
+    <dl class="dstats">
+      <div><dt>Push-back felt at the glove</dt><dd>+30<small>mA</small></dd><p>Glove current 2 s into a pinch, above its level just before. With feedback off: +1.5 mA.</p></div>
+      <div><dt>Hand grip current</dt><dd>−32<small>%</small></dd><p>103 mA with feedback, 150 mA without. Median over the 70 demonstrations in each group, p &lt; 0.001.</p></div>
+      <div><dt>Target past the measured angle</dt><dd>1.0°<small>vs</small>1.7°</dd><p>How far the hand is told to close beyond where the berry stops it, with and without feedback. This gap sets the grip. p &lt; 0.001.</p></div>
+    </dl>
+
+    <figure class="avg" id="avgFig">
+      <div class="legend" aria-hidden="true">
+        <span><i style="background:var(--glove)"></i>glove, feedback on</span>
+        <span><i style="background:var(--hand)"></i>hand, feedback on</span>
+        <span><i class="dash"></i>feedback off</span>
+        <span><i class="ci"></i>95% confidence band</span>
+      </div>
+      <div class="avg-plot" id="avgPlot" role="img" aria-label="Mean motor current around a pinch, two lanes. Glove: with feedback on it rises from about 57 to 87 mA by 2 s; with feedback off it stays flat near 55 mA. Hand: with feedback on it levels near 112 mA; with feedback off it climbs to about 170 mA."><p class="loadmsg" id="avgLoad">loading 425 pinches</p></div>
+      <div class="tip" id="avgTip" hidden></div>
+      <figcaption class="proc">Mean of 213 pinches with feedback on and 212 with it off, aligned at the moment the middle finger closes. Motor currents are rectified, low-passed at 4.5 Hz and summed over the thumb and middle-finger motors. Bands are 95% intervals.</figcaption>
+      <details class="avg-table"><summary>Show the numbers</summary><div class="tablebox" id="avgTable"></div></details>
+    </figure>
+
+    <div class="demo-head">
+      <div>
+        <h3>One pinch from each group</h3>
+        <p>Each clip is the pinch whose two curves sit closest to its group's average. Same camera, same axes.</p>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Example pinches">
+        <button class="tab" role="tab" id="clip-on" data-clip="on" aria-selected="true">Feedback on</button>
+        <button class="tab" role="tab" id="clip-off" data-clip="off" aria-selected="false">Feedback off</button>
+      </div>
+    </div>
+    <div class="demo">
+      <div class="demo-vid">
+        <video id="demoVid" src="assets/clips/bb_on.mp4" muted playsinline loop preload="auto" aria-label="Head camera view of the robot hand pinching a blueberry, with the wrist camera inset"></video>
+        <span class="vtag" style="left:12px;top:12px">Head camera</span>
+        <span class="vtag" style="left:1.9%;bottom:calc(35.8% + 6px)">Wrist camera</span>
+      </div>
+      <div class="demo-side">
+        <canvas class="traces" id="demoTr" aria-label="Glove and hand current for this pinch, with a playhead synced to the video"></canvas>
+        <div class="transport">
+          <button class="btn" id="demoPlay" aria-pressed="true">Pause</button>
+          <input type="range" id="demoScrub" min="0" max="1000" value="0" aria-label="Clip position">
+          <output id="demoClock" for="demoScrub">−1.5 s</output>
+        </div>
+        <p class="clipnote" id="demoNote" aria-live="polite"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="policy">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Learned policies</p>
+      <h2 class="title">Then the robot does it alone.</h2>
+      <p class="sub">π0.5 policies trained on the demonstrations above drive the arm and the hand with no operator. Their grip is measured exactly as the demonstrations' is, so the two can be read side by side.</p>
+    </div>
+    <div class="demo-head" id="chipPolicy">
+      <div>
+        <p class="doer robot">Autonomous · no operator</p>
+        <h3>Potato chips: the policy keeps the demonstrations' grip</h3>
+        <p>π0.5 trained on the 70 feedback-on potato-chip demonstrations, with the three cameras and the hand's recent joint angles and motor currents as inputs, runs the arm and the hand on its own. One of its runs is in the videos below.</p>
+      </div>
+    </div>
+    <dl class="dstats">
+      <div><dt>Grip current, policy</dt><dd>154<small>mA</small></dd><p>Over the pinches that held a chip in finished runs. Its demonstrations: 150 mA.</p></div>
+      <div><dt>Target past the measured angle</dt><dd>1.8°</dd><p>How far the policy tells the hand to close beyond where the chip stops it. Its demonstrations: 1.7°.</p></div>
+      <div><dt>Success rate</dt><dd>75<small>%</small></dd><p>Runs with both chips in the bowl: 15 of 20.</p></div>
+    </dl>
+
+    <div class="demo-head" id="rollouts">
+      <div>
+        <p class="doer robot">Autonomous · no operator</p>
+        <h3>Blueberries: the policy trained with feedback grips lighter</h3>
+        <p>Two π0.5 policies, one per set of 70 demonstrations. The feedback-on policy also takes the hand's recent joint angles and motor currents as input; the feedback-off policy is plain π0.5. The feedback-on policy ran the arm and the hand on its own 20 times, the feedback-off policy 15 times, and their grip is measured exactly as the demonstrations' is.</p>
+      </div>
+    </div>
+    <dl class="dstats">
+      <div><dt>Grip current, the two policies</dt><dd>94<small>vs</small>127<small>mA</small></dd><p>Trained on feedback-on vs feedback-off demonstrations, over the pinches that held a berry in finished runs. p &lt; 0.001. Their demonstrations: 103 and 150 mA.</p></div>
+      <div><dt>Target past the measured angle</dt><dd>0.9°<small>vs</small>1.2°</dd><p>How far each policy tells the hand to close beyond where the berry stops it. p = 0.002.</p></div>
+      <div><dt>Success rate</dt><dd>70%<small>vs</small>47%</dd><p>Runs with all three berries in the bowl: 14 of 20 for the feedback-on policy, 7 of 15 for the feedback-off policy.</p></div>
+    </dl>
+    <figure class="avg" id="polFig">
+      <div class="legend" aria-hidden="true">
+        <span><i style="background:var(--hand)"></i>feedback-on data</span>
+        <span><i style="background:var(--off)"></i>feedback-off data</span>
+        <span><i class="ci"></i>95% interval</span>
+      </div>
+      <div class="avg-plot pol-curve" id="polCurve" role="img" aria-label="Mean hand current around a pinch that held a berry, two panels. Demonstrations: feedback off climbs to about 172 mA, feedback on to about 115 mA. Policies: trained on feedback-off demonstrations about 145 mA, trained on feedback-on demonstrations about 115 mA."></div>
+      <div class="tip" id="polCurveTip" hidden></div>
+      <div class="legend" aria-hidden="true" style="margin-top:22px">
+        <span><i class="dot" style="opacity:.55"></i>one demonstration</span>
+        <span><i class="dot"></i>one finished policy run</span>
+        <span><i class="tick"></i>median</span>
+        <span><i class="floor"></i>sensor noise, hand open</span>
+      </div>
+      <div class="pol-plot" id="polPlot" role="img" aria-label="Grip current per demonstration and per finished run. Feedback-on demonstrations: median 103 mA. Feedback-off demonstrations: median 150 mA. Policy trained on feedback-on demonstrations, 14 finished runs: median 94 mA. Policy trained on feedback-off demonstrations, 7 finished runs: median 127 mA."><p class="loadmsg" id="polLoad">loading runs</p></div>
+      <div class="tip" id="polTip" hidden></div>
+      <figcaption class="proc">Top: mean hand current around the pinches that held a berry, aligned at the moment the middle finger closes; bands are 95% intervals. Bottom: one dot per demonstration or finished run.</figcaption>
+      <details class="avg-table" hidden><summary>Show the runs</summary><div class="tablebox" id="polTable"></div></details>
+    </figure>
+    <div class="demo-head" id="media">
+      <div>
+        <p class="doer robot">Autonomous · no operator</p>
+        <h3>Uncut runs on the real robot</h3>
+        <p>One run of the potato-chip policy; two of the feedback-on blueberry policy, one where every pinch lands and one where it misses and recovers; and one of the feedback-off blueberry policy, in which a berry gets squashed. The hand current runs under each video.</p>
+      </div>
+    </div>
+    <div class="tabs run-tabs" role="tablist" aria-label="Policy runs">
+      <button class="tab" role="tab" data-run="chips" aria-selected="true">Potato chips</button>
+      <button class="tab" role="tab" data-run="clean" aria-selected="false">Blueberries: a clean run</button>
+      <button class="tab" role="tab" data-run="retry" aria-selected="false">Blueberries: a run with retries</button>
+      <button class="tab" role="tab" data-run="squash" aria-selected="false">Feedback off: a squashed berry</button>
+    </div>
+    <figure class="run">
+      <div class="run-main">
+        <div class="demo-vid">
+          <video id="runVid" src="assets/clips/run_chip_a70.mp4" muted playsinline loop preload="metadata" aria-label="Head camera view of the robot arm and hand picking two potato chips into a bowl on their own, wrist camera inset, four times real speed"></video>
+          <span class="vtag" style="left:12px;top:12px">Head camera</span>
+          <span class="vtag" style="right:12px;top:12px" id="runSpeed">4× speed</span>
+          <span class="vtag" style="left:1.9%;bottom:calc(35.8% + 6px)">Wrist camera</span>
+        </div>
+        <div class="transport">
+          <button class="btn" id="runPlay" aria-pressed="true">Pause</button>
+          <div class="runline" id="runLine" role="slider" tabindex="0" aria-label="Position in the run" aria-valuemin="0" aria-valuenow="0"></div>
+          <output id="runClock">0 s</output>
+        </div>
+        <div class="legend run-legend" aria-hidden="true">
+          <span><i style="background:var(--ink-2);height:2px"></i>hand current</span>
+          <span><i class="k-carry"></i>carried to the bowl</span>
+          <span><i class="k-miss"></i>closed, nothing carried</span>
+        </div>
+      </div>
+      <figcaption class="run-cap">
+        <h3 id="runH">Two potato chips, thumb and ring finger</h3>
+        <p id="runP">π0.5 trained on the 70 feedback-on potato-chip demonstrations, with three cameras and the hand's recent joint angles and motor currents as inputs. It carries the first chip to the bowl, closes once on the second without lifting it, opens, and takes it on the next try.</p>
+        <dl class="facts" id="runFacts"></dl>
+        <p class="small">All four runs are uncut and autonomous. Under each video: the summed motor current of the hand's thumb and the finger it pinches with.</p>
+      </figcaption>
+    </figure>
+    <div class="slots" hidden>
+      <div class="slot"><b>Photo</b><span>Glove worn on the hand</span></div>
+      <div class="slot"><b>Photo</b><span>Robot hand</span></div>
+      <div class="slot"><b>Photo</b><span>Glove and hand side by side</span></div>
+      <div class="slot wide"><b>Video</b><span>Pinch and twist with each finger, feedback on and off</span></div>
+      <div class="slot"><b>Video</b><span>Rolling a pen between thumb and finger</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="band mist" hidden>
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Next</p>
+      <h2 class="title">From a good feel to measured value.</h2>
+    </div>
+    <ul class="next">
+      <li><h3>Operator study</h3><p>The same tasks with feedback on and off, across operators, to measure what the feedback changes.</p></li>
+      <li><h3>Policies from force-feedback demonstrations</h3><p>Every demonstration carries joint angles and motor currents from both devices at 540 Hz.</p></li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>Motor Glove</span><span>3D: CAD export driven by logged joint angles</span></div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const DEG = Math.PI / 180;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const ease = (x) => x * x * (3 - 2 * x);
+
+/* ---------- small static charts (SVG, drawn from tokens so they follow the theme) ---------- */
+function bars(svg, rows, max, opts = {}) {
+  const W = 520, L = 150, R = 64, rowH = 34, top = 8;
+  const x = (v) => L + (W - L - R) * v / max;
+  let s = "";
+  (opts.ticks || []).forEach((t) => { s += `<line x1="${x(t)}" y1="${top}" x2="${x(t)}" y2="${top + rows.length * rowH}" stroke="var(--line)" stroke-width="1"/><text class="ax" x="${x(t)}" y="${top + rows.length * rowH + 16}" text-anchor="middle">${t}</text>`; });
+  rows.forEach((r, i) => {
+    const y = top + i * rowH + 8;
+    s += `<text class="lab" x="0" y="${y + 13}">${r.label}</text>`;
+    if (r.lo !== undefined) s += `<rect x="${x(0)}" y="${y}" width="${Math.max(2, x(r.lo) - x(0))}" height="16" rx="4" fill="${r.color}"/><rect x="${x(r.lo)}" y="${y}" width="${x(r.hi) - x(r.lo)}" height="16" rx="4" fill="${r.color}" opacity=".45"/>`;
+    else s += `<rect x="${x(0)}" y="${y}" width="${Math.max(2, x(r.v) - x(0))}" height="16" rx="4" fill="${r.color}"/>`;
+    let tx = x(r.hi !== undefined ? r.hi : r.v) + 8;
+    if (opts.line !== undefined && tx < x(opts.line) && tx + r.text.length * 7.4 > x(opts.line) - 4) tx = x(opts.line) + 8;
+    s += `<text class="lab" x="${tx}" y="${y + 13}" style="font-family:var(--mono)">${r.text}</text>`;
+  });
+  if (opts.line !== undefined) s += `<line x1="${x(opts.line)}" y1="${top - 2}" x2="${x(opts.line)}" y2="${top + rows.length * rowH + 2}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="4 4"/><text class="ax" x="${x(opts.line) + 6}" y="${top + 9}" fill="var(--ink)">${opts.lineLabel}</text>`;
+  svg.setAttribute("viewBox", `0 0 ${W} ${top + rows.length * rowH + 24}`);
+  svg.innerHTML = s;
+}
+bars($("#dampPlot"), [
+  { label: "Current mode, M077", v: 0.45, text: "0.45", color: "var(--muted)" },
+  { label: "Voltage mode, M077", lo: 1.3, hi: 1.8, text: "1.3–1.8", color: "var(--glove)" },
+  { label: "Voltage mode, M288", v: 21, text: "21", color: "var(--glove)" },
+], 24, { ticks: [0, 6, 12, 18, 24], line: 5.6, lineLabel: "K·T = 5.6" });
+bars($("#gripPlot"), [
+  { label: "0–1 mm into the wall", v: 112, text: "112 mA", color: "var(--hand)" },
+  { label: "2–3 mm", v: 279, text: "279 mA", color: "var(--hand)" },
+  { label: "4.5–7 mm", v: 651, text: "651 mA", color: "var(--hand)" },
+], 800, { ticks: [0, 200, 400, 600, 800] });
+
+/* ---------- joint names ---------- */
+const JOINT_LABEL = { thumb_cmc_abd_motor: "CMC abduction", thumb_cmc_flex_motor: "CMC flexion", thumb_mcp_flex_motor: "MCP flexion", thumb_ip_motor: "IP flexion",
+  index_mcp_flex_motor: "MCP flexion", index_mcp_abd_motor: "MCP abduction", index_pip_motor: "PIP flexion",
+  mid_mcp_motor: "MCP flexion", mid_mcp_abd_motor: "MCP abduction", mid_pip_motor: "PIP flexion",
+  ring_mcp_flex_motor: "MCP flexion", ring_mcp_abd_motor: "MCP abduction", ring_pip_motor: "PIP flexion" };
+const FINGER_LABEL = { thumb: "Thumb", index: "Index", mid: "Middle", ring: "Ring" };
+const ANATOMICAL = { thumb_ip_motor: "thumb_ip", index_pip_motor: "index_pip", mid_pip_motor: "mid_pip", ring_pip_motor: "ring_pip" };   // glove: the joint the motor drives through a rod
+const DOF_COL = ["#ff5a5f", "#19b8a6", "#9b7bff", "#4b8dff"];
+const MODULE_TEXT = {
+  mid_mcp: { h: "A knuckle with neighbours on both sides", p: ["The index and ring fingers leave no room for a motor on the middle finger's MCP axis. A double parallelogram, one on each side of the finger, lets the servo sit 35 mm away and still turns the finger about a virtual axis through the operator's knuckle.", "Abduction rides on the output of that linkage, so the two motions stay independent. The robot hand puts a servo directly on the same axis."],
+    facts: [["Servo to virtual axis", "35 mm"], ["Linkage", "double parallelogram, both sides"]] },
+  thumb: { h: "A thumb base that swings like a ball joint", p: ["Two servos at the base turn the thumb about two axes 75° apart. Together they carry the thumb across the palm and toward each finger the way the saddle joint at the base of a human thumb does. MCP and IP add flexion, four joints in all.", "The IP joint is turned through a crank and rod, not by a servo on its axis."],
+    facts: [["Joints", "4"], ["Angle between the two base axes", "75°"]] },
+  index_mcp: { h: "Two axes that cross at the knuckle", p: ["Flexion and abduction axes pass within 1.2 mm of each other, a compact universal joint at the index MCP. The ring finger is built the same way.", "Further out, the PIP is turned by a crank-and-rod four-bar so its servo rides on the finger without thickening the joint."],
+    facts: [["Distance between the two axes", "1.2 mm"], ["Angle between them", "90°"]] },
+};
+
+/* ---------- joint map UI is built before the model loads, so the page reads complete at rest ---------- */
+const state = { joint: 7, mod: "mid_mcp", explodeUser: false, explode: 0.6, motion: false, playing: true, rt: 0 };
+function mechText(H) {
+  const t = MODULE_TEXT[state.mod];
+  let dofs = "";
+  if (H) H.models.glove.modules[state.mod].dofs.forEach((f, i) => { dofs += `<li><i class="${f.virtual ? "v" : ""}" style="background:${DOF_COL[i % 4]};color:${DOF_COL[i % 4]}"></i>${f.label}${f.virtual ? " · virtual axis" : ""}</li>`; });
+  $("#mechText").innerHTML = `<h3>${t.h}</h3>${t.p.map((x) => `<p>${x}</p>`).join("")}<ul class="dofs" aria-label="Degrees of freedom shown in the view">${dofs}</ul><dl class="facts">${t.facts.map((f) => `<div><dt>${f[0]}</dt><dd>${f[1]}</dd></div>`).join("")}</dl>`;
+}
+mechText(null);
+const ORDER = { thumb: ["thumb_cmc_abd_motor", "thumb_cmc_flex_motor", "thumb_mcp_flex_motor", "thumb_ip_motor"], index: ["index_mcp_flex_motor", "index_mcp_abd_motor", "index_pip_motor"], mid: ["mid_mcp_motor", "mid_mcp_abd_motor", "mid_pip_motor"], ring: ["ring_mcp_flex_motor", "ring_mcp_abd_motor", "ring_pip_motor"] };
+const ALL = [].concat(ORDER.thumb, ORDER.index, ORDER.mid, ORDER.ring);
+(function buildJointMap() {
+  let h = "";
+  for (const f of Object.keys(ORDER)) {
+    h += `<div class="finger"><h3>${FINGER_LABEL[f]}</h3><div class="jrow">`;
+    for (const j of ORDER[f]) { const k = ALL.indexOf(j); h += `<button class="jbtn" data-j="${k}" aria-pressed="${k === state.joint}"><b>${String(k + 1).padStart(2, "0")}</b>${JOINT_LABEL[j]}</button>`; }
+    h += "</div></div>";
+  }
+  $("#jointMap").innerHTML = h;
+})();
+let HDR = null;
+function readout() {
+  const j = ALL[state.joint], f = Object.keys(ORDER).find((k) => ORDER[k].includes(j));
+  let s = `<strong>${FINGER_LABEL[f]} · ${JOINT_LABEL[j]}</strong> is servo ${state.joint + 1} on both devices. `;
+  if (HDR) {
+    const off = HDR.axis_offset_mm[state.joint];
+    s += off < 0.01 ? "In CAD the hand's axis lies exactly on the glove's." : `In CAD the hand's axis is parallel to the glove's and ${off.toFixed(off < 0.1 ? 2 : 1)} mm from it.`;
+    if (j === "mid_mcp_motor") s += " On the glove this is a virtual axis made by a linkage; no part sits on it.";
+    else if (ANATOMICAL[j]) s += " On the glove the servo turns it through a crank and rod.";
+  }
+  $("#jointReadout").innerHTML = s;
+}
+readout();
+$("#jointMap").addEventListener("click", (e) => {
+  const b = e.target.closest(".jbtn"); if (!b) return;
+  state.joint = +b.dataset.j;
+  document.querySelectorAll(".jbtn").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  readout(); markDirty();
+});
+document.querySelectorAll(".tab[data-mod]").forEach((t) => t.addEventListener("click", () => {   // only the mechanism tabs; the demo / run tabs below have their own handlers
+  state.mod = t.dataset.mod;
+  document.querySelectorAll(".tab[data-mod]").forEach((x) => x.setAttribute("aria-selected", x === t));
+  mechText(HDR); if (V.mech) V.mech.fit(); markDirty();
+}));
+$("#explode").addEventListener("input", (e) => { state.explodeUser = true; state.explode = e.target.value / 100; if (state.motion) toggleMotion(false); markDirty(); });
+function toggleMotion(on) { state.motion = on; state.mt0 = performance.now(); const b = $("#motionBtn"); b.setAttribute("aria-pressed", on); b.textContent = on ? "Stop motion" : "Play motion"; markDirty(); }
+$("#motionBtn").addEventListener("click", () => toggleMotion(!state.motion));
+$("#playBtn").addEventListener("click", () => { state.playing = !state.playing; const b = $("#playBtn"); b.setAttribute("aria-pressed", state.playing); b.textContent = state.playing ? "Pause" : "Play"; });
+$("#scrub").addEventListener("input", (e) => { if (state.dur) { state.rt = e.target.value / 1000 * state.dur; markDirty(); } });
+
+const V = {};           // views by name
+let REP = null;
+function markDirty() { for (const k in V) V[k].dirty = true; }
+
+/* ---------- 3D ---------- */
+function fail(msg) { $("#heroLoading").textContent = msg; document.documentElement.dataset.err = msg; }
+if (!window.THREE) { fail("3D library did not load"); return; }
+
+async function loadBin(url) {
+  const r = await fetch(url); if (!r.ok) throw new Error(url + " " + r.status);
+  const b64 = atob((await r.text()).trim()), u8 = new Uint8Array(b64.length);      // the model ships as base64 text of a gzip stream
+  for (let i = 0; i < b64.length; i++) u8[i] = b64.charCodeAt(i);
+  if (typeof DecompressionStream !== "function") throw new Error("this browser cannot unpack the model");
+  const ab = await new Response(new Blob([u8]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer();
+  const dv = new DataView(ab), hl = dv.getUint32(4, true);
+  const H = JSON.parse(new TextDecoder().decode(new Uint8Array(ab, 8, hl)));
+  return { H, ab, base: 8 + hl };
+}
+
+class Robot {
+  constructor(H, key, geos, matOf) {
+    const M = this.M = H.models[key]; this.H = H; this.key = key;
+    this.root = new THREE.Group();
+    this.frame = new THREE.Group(); this.root.add(this.frame);        // puts this model in the glove's world frame (the two exports have different root poses)
+    if (M.align) { this.frame.position.fromArray(M.align.pos); const q = M.align.quat; this.frame.quaternion.set(q[1], q[2], q[3], q[0]); }
+    this.joints = {};
+    this.bodies = M.bodies.map((b) => {
+      const g = new THREE.Group(); g.position.fromArray(b.pos); g.quaternion.set(b.quat[1], b.quat[2], b.quat[3], b.quat[0]);
+      let inner = g, jg = null, axis = null;
+      if (b.joint) {
+        jg = new THREE.Group(); jg.position.fromArray(b.joint.anchor);
+        inner = new THREE.Group(); inner.position.fromArray(b.joint.anchor).negate();
+        g.add(jg); jg.add(inner); axis = new THREE.Vector3().fromArray(b.joint.axis).normalize();
+      }
+      const o = { g, jg, inner, axis, b };
+      if (b.joint) this.joints[b.joint.name] = o;
+      return o;
+    });
+    M.bodies.forEach((b, i) => (b.parent < 0 ? this.frame : this.bodies[b.parent].inner).add(this.bodies[i].g));
+    this.geoms = M.geoms.map((ge) => {
+      const grp = new THREE.Group(); grp.position.fromArray(ge.p); grp.quaternion.set(ge.q[1], ge.q[2], ge.q[3], ge.q[0]);
+      const me = H.meshes[ge.m], mesh = new THREE.Mesh(geos[ge.m], matOf(ge));
+      mesh.position.fromArray(me.c); mesh.scale.setScalar(me.s); mesh.castShadow = mesh.receiveShadow = true; grp.add(mesh);
+      this.bodies[ge.b].inner.add(grp);
+      return { grp, ge, mesh, p0: grp.position.clone() };
+    });
+    this.axisObj = {};
+    this.lim = M.limits || {};
+    this.mask = null; this.exKey = null; this.exVal = 0;
+  }
+  addAxis(name, t0, t1, dashed, at) {                  // a thin rod along a joint axis, in the joint's parent frame
+    let host, p, a;
+    if (at) { host = at.host; p = at.p; a = at.a; }
+    else if (typeof name === "string") { const j = this.joints[name]; host = j.g; p = new THREE.Vector3().fromArray(j.b.joint.anchor); a = j.axis; }
+    else { host = this.frame; p = new THREE.Vector3().fromArray(name.p); a = new THREE.Vector3().fromArray(name.a).normalize(); name = name.id; }
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, depthTest: false, transparent: true, opacity: 0.95, toneMapped: false });
+    const grp = new THREE.Group(); grp.renderOrder = 10;
+    const mk = (s0, s1) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(0.0012, 0.0012, s1 - s0, 8), mat); m.position.copy(p).addScaledVector(a, (s0 + s1) / 2); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), a); m.renderOrder = 10; grp.add(m); };
+    if (dashed) { for (let s = t0; s < t1; s += 0.006) mk(s, Math.min(t1, s + 0.0038)); } else mk(t0, t1);
+    grp.visible = false; host.add(grp);
+    this.axisObj[name] = { grp, mat };
+  }
+  addAnat(k, d, half) {                                // the anatomical axis of joint k: same rod, same place on the finger, on both devices
+    if (d.joint) { const j = this.joints[d.joint]; this.addAxis("anat:" + k, -half, half, false, { host: j.g, p: new THREE.Vector3().fromArray(j.b.joint.anchor).addScaledVector(j.axis, d.s), a: j.axis }); }
+    else this.addAxis("anat:" + k, -half, half, false, { host: this.frame, p: new THREE.Vector3().fromArray(d.c), a: new THREE.Vector3().fromArray(d.a).normalize() });
+  }
+  showAxes(list) {                                     // list: [[name, color], …]; everything else hidden
+    for (const k in this.axisObj) this.axisObj[k].grp.visible = false;
+    for (const [n, c] of list || []) { const o = this.axisObj[n]; if (o) { o.grp.visible = true; o.mat.color.set(c); } }
+  }
+  setPose(q) {
+    for (const o of this.bodies) {
+      const j = o.b.joint; if (!j) continue;
+      let a;
+      if (j.motor !== undefined) { a = q[j.motor]; const l = this.lim[j.motor]; if (l) a = clamp(a, l[0], l[1]); }
+      else { const t = j.table, n = t.vals.length, u = clamp((q[t.motor] - t.lo) / (t.hi - t.lo), 0, 1) * (n - 1), i = Math.min(n - 2, Math.floor(u)); a = t.vals[i] + (t.vals[i + 1] - t.vals[i]) * (u - i); }
+      o.jg.quaternion.setFromAxisAngle(o.axis, a);
+    }
+  }
+  setModule(key, e) {                                  // key = null: whole device; otherwise only that module's parts, spread by e
+    if (key === this.exKey && e === this.exVal) return;
+    this.exKey = key; this.exVal = e;
+    for (const g of this.geoms) {
+      const ex = key && g.ge.ex && g.ge.ex[key];
+      g.grp.visible = !key || !!ex;
+      if (ex) g.grp.position.set(g.p0.x + ex[0] * e, g.p0.y + ex[1] * e, g.p0.z + ex[2] * e); else g.grp.position.copy(g.p0);
+    }
+  }
+}
+
+function makeEnv(renderer) {                          // a small light studio: bright ceiling, two soft side boxes, grey walls, darker floor
+  const s = new THREE.Scene(); s.background = new THREE.Color(0x6f747d);
+  const panel = (w, h, hex, k, x, y, z) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(hex).multiplyScalar(k), side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); s.add(m); };
+  panel(8, 8, 0xffffff, 5, 0, 7, 2); panel(5, 9, 0xe4ecff, 3.2, -8, 2, 3); panel(5, 7, 0xfff0e0, 3.2, 8, 1, -2); panel(9, 4, 0xffffff, 1.6, 0, 1, -8); panel(12, 12, 0x2c2f36, 1, 0, -7, 0);
+  const pm = new THREE.PMREMGenerator(renderer), tex = pm.fromScene(s, 0.03).texture; pm.dispose(); return tex;
+}
+
+(async function main() {
+  let pack, rep;
+  try { [pack, rep] = await Promise.all([loadBin("assets/model.txt"), fetch("assets/replay.json").then((r) => { if (!r.ok) throw new Error("replay " + r.status); return r.json(); })]); }
+  catch (e) { fail("3D data did not load (" + e.message + ")"); return; }
+  const H = HDR = pack.H; REP = rep; readout(); mechText(H);
+  const N = H.motors.length;
+
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" }); }
+  catch (e) { fail("WebGL is not available in this browser"); return; }
+  renderer.setPixelRatio(1); renderer.setClearColor(0x000000, 0);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.12;
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;      // parts shade each other: that is what makes white-on-white readable
+  const glc = renderer.domElement; let GLW = 0, GLH = 0;
+
+  const scene = new THREE.Scene(); scene.environment = makeEnv(renderer);
+  scene.add(new THREE.HemisphereLight(0xf2f5ff, 0x4a4d55, 0.42));
+  const key = new THREE.DirectionalLight(0xffffff, 2.7); scene.add(key); scene.add(key.target);
+  key.castShadow = true; key.shadow.mapSize.set(2048, 2048); key.shadow.bias = -0.0004; key.shadow.normalBias = 0.0007; key.shadow.radius = 2.5;
+  const rim = new THREE.DirectionalLight(0xdfe7ff, 0.7); scene.add(rim); scene.add(rim.target);
+
+  const buf = (i, T) => { const b = H.buffers[i]; return new T(pack.ab.slice(pack.base + b.off, pack.base + b.off + b.len)); };
+  const geos = H.meshes.map((me) => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute("position", new THREE.BufferAttribute(buf(me.pos, Int16Array), 3, true));
+    g.setAttribute("normal", new THREE.BufferAttribute(buf(me.nor, Int8Array), 3, true));
+    g.setIndex(new THREE.BufferAttribute(buf(me.idx, me.i32 ? Uint32Array : Uint16Array), 1));
+    g.boundingSphere = new THREE.Sphere(new THREE.Vector3(), 1.7321);
+    return g;
+  });
+  const std = (c, m, r, e, edged) => new THREE.MeshStandardMaterial({ color: c, metalness: m, roughness: r, envMapIntensity: e === undefined ? 0.85 : e, polygonOffset: !!edged, polygonOffsetFactor: 1, polygonOffsetUnits: 1 });
+  // roles: case, conn, case_screw, horn, screw, struct, link
+  const matsG = [std(0x23262c, 0.25, 0.5), std(0xd8d2c4, 0, 0.6), std(0x8e9198, 0.9, 0.35), std(0xbfc3ca, 1, 0.28), std(0xa1a5ac, 1, 0.3), std(0xf3f1ec, 0, 0.66, 0.42, true), std(0xff6a2b, 0.05, 0.5, 0.45, true)];
+  // hand: satin-black structure, graphite servo cases, bright-silver fingertips and hardware, one anodised accent on the adapters
+  const matsH = [std(0x2a2d33, 0.3, 0.55), std(0x3a3d44, 0.2, 0.5), std(0xc9cdd3, 1, 0.3), std(0xe3e6ea, 1, 0.2, 1.1), std(0xd0d4da, 1, 0.24, 1.1), std(0x0d0e11, 0.6, 0.3, 1.15), std(0x10b5a0, 0.85, 0.3, 1.1)];
+  const silver = std(0xe6e9ed, 1, 0.24, 1.15);
+  const tipsH = new Set(Object.values(H.models.hand.tips));
+  const glove = new Robot(H, "glove", geos, (ge) => matsG[ge.r]);
+  const hand = new Robot(H, "hand", geos, (ge) => (ge.r === 5 && tipsH.has(ge.b) ? silver : matsH[ge.r]));
+  scene.add(glove.root, hand.root);
+  // fine dark lines along the hard edges of the printed parts: the white structure keeps its outline at any angle
+  const edgeMat = [new THREE.LineBasicMaterial({ color: 0x2c313b, transparent: true, opacity: 0.34 }), new THREE.LineBasicMaterial({ color: 0x7a2a08, transparent: true, opacity: 0.4 })];
+  const edgeGeo = {}, edgeTodo = glove.geoms.filter((g) => g.ge.r === 5 || g.ge.r === 6);
+  (function edgeStep() {
+    const g = edgeTodo.shift(); if (!g) return;
+    const eg = edgeGeo[g.ge.m] || (edgeGeo[g.ge.m] = new THREE.EdgesGeometry(geos[g.ge.m], 36));
+    g.mesh.add(new THREE.LineSegments(eg, edgeMat[g.ge.r - 5])); markDirty(); setTimeout(edgeStep, 0);
+  })();
+  for (const b of H.models.glove.bodies) if (b.joint) glove.addAxis(b.joint.name, -0.028, 0.028, false);
+  for (const k in H.models.glove.modules) H.models.glove.modules[k].dofs.forEach((f) => { if (f.virtual) glove.addAxis({ id: "virtual:" + f.name, p: f.p, a: f.a }, f.t0 - 0.008, f.t1 + 0.008, true); });
+  H.models.glove.anat.forEach((d, k) => glove.addAnat(k, d, 0.024));
+  H.models.hand.anat.forEach((d, k) => hand.addAnat(k, d, 0.024));
+
+  /* poses */
+  const frameOf = (seg, arr, f) => { const n = seg.n, i = clamp(Math.floor(f), 0, n - 1), j = Math.min(n - 1, i + 1), u = f - Math.floor(f), out = new Array(N); for (let k = 0; k < N; k++) out[k] = (seg[arr][i * N + k] * (1 - u) + seg[arr][j * N + k] * u) * 0.01 * DEG; return out; };
+  const CLIPS = REP.clips, idle = CLIPS.find((c) => c.key === "free") || CLIPS[0];
+  let rp = CLIPS[0];
+  const pose0L = frameOf(idle, "qL", 0), pose0B = frameOf(idle, "qB", 0);
+  const sgn = new Array(N).fill(1);                    // does the hand joint turn the same way as the glove joint? (from the recording)
+  for (let k = 0; k < N; k++) { let c = 0, mL = 0, mB = 0; for (let i = 0; i < idle.n; i++) { mL += idle.qL[i * N + k]; mB += idle.qB[i * N + k]; } mL /= idle.n; mB /= idle.n; for (let i = 0; i < idle.n; i++) c += (idle.qL[i * N + k] - mL) * (idle.qB[i * N + k] - mB); sgn[k] = c < 0 ? -1 : 1; }
+  function idlePose(t) {
+    const n = idle.n, B = 20, f = (t * idle.fps) % n; let L = frameOf(idle, "qL", f), Bq = frameOf(idle, "qB", f);
+    if (f > n - 1 - B) { const w = ease((f - (n - 1 - B)) / B); L = L.map((v, k) => v + (pose0L[k] - v) * w); Bq = Bq.map((v, k) => v + (pose0B[k] - v) * w); }
+    return [L, Bq];
+  }
+
+  /* views: one WebGL context renders every view and each view's 2D canvas receives a copy */
+  const tmp = new THREE.Vector3();
+  function makeView(id, o) {
+    const canvas = $(id), v = Object.assign({ canvas, ctx: canvas.getContext("2d"), visible: false, dirty: true, camera: new THREE.PerspectiveCamera(26, 1, 0.01, 10),
+      target: new THREE.Vector3(), S: new THREE.Vector3(0, -1, 0), U: new THREE.Vector3(1, 0, 0), D: new THREE.Vector3(0, 0, 1), fitW: 0.44, fitH: 0.23, th: 0, ph: 0.2, th0: 0, spin: 0, lastDrag: -1e9 }, o);
+    let drag = null;
+    canvas.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, y: e.clientY, th: v.th, ph: v.ph }; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener("pointermove", (e) => { if (!drag) return; v.th = drag.th + (v.turntable ? 1 : -1) * (e.clientX - drag.x) * 0.008; v.ph = clamp(drag.ph + (e.clientY - drag.y) * 0.006, -1.2, 1.35); v.lastDrag = performance.now(); v.dirty = true; });
+    const end = () => { drag = null; }; canvas.addEventListener("pointerup", end); canvas.addEventListener("pointercancel", end);
+    return v;
+  }
+  function placeCamera(v, aspect) {
+    const c = v.camera, th = v.turntable ? 0 : v.th, cp = Math.cos(v.ph), sp = Math.sin(v.ph), ct = Math.cos(th), st = Math.sin(th);
+    const dist = Math.max(v.fitH, v.fitW / aspect) / (2 * Math.tan(13 * DEG)) * 1.1;      // far enough that the subject fits both ways
+    c.position.copy(v.target).addScaledVector(v.D, dist * cp * ct).addScaledVector(v.S, dist * cp * st).addScaledVector(v.U, dist * sp);
+    c.up.copy(v.U); c.aspect = aspect; c.updateProjectionMatrix(); c.lookAt(v.target);
+    key.position.copy(c.position).addScaledVector(v.U, 0.5).addScaledVector(tmp.crossVectors(v.U, tmp.copy(c.position).sub(v.target)).normalize(), -0.35); key.target.position.copy(v.target);
+    rim.position.copy(v.target).addScaledVector(v.D, -0.6).addScaledVector(v.U, 0.5).addScaledVector(v.S, 0.4); rim.target.position.copy(v.target);
+    const R = 0.62 * Math.max(v.fitW, v.fitH), sc = key.shadow.camera, dl = key.position.distanceTo(v.target);       // the shadow map covers just this view's subject
+    sc.left = sc.bottom = -R; sc.right = sc.top = R; sc.near = Math.max(0.01, dl - 2 * R); sc.far = dl + 2 * R; sc.updateProjectionMatrix();
+  }
+  function draw(v) {
+    const r = v.canvas.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2), w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+    if (w < 2 || h < 2) return;
+    if (v.canvas.width !== w || v.canvas.height !== h) { v.canvas.width = w; v.canvas.height = h; }
+    if (w > GLW || h > GLH) { GLW = Math.max(GLW, w); GLH = Math.max(GLH, h); renderer.setSize(GLW, GLH, false); }
+    v.apply(); placeCamera(v, w / h);
+    renderer.setViewport(0, 0, w, h); renderer.setScissor(0, 0, w, h); renderer.setScissorTest(true); renderer.clear(); renderer.render(scene, v.camera);
+    v.ctx.clearRect(0, 0, w, h); v.ctx.drawImage(glc, 0, GLH - h, w, h, 0, 0, w, h);
+  }
+  const AXIS = 0x1f5cff;
+  const PAIR = 0.128;                                    // half the distance between the two devices
+  // model frame: fingers point along +x, the back of the hand faces +z, the fingers are spread along y.
+  // In the side-by-side views a drag turns each device about its own finger axis, so the glove stays on the left and the hand on the right.
+  const C0 = new THREE.Vector3(0, 0, 0.098), XAX = new THREE.Vector3(1, 0, 0), qy = new THREE.Quaternion(), tv = new THREE.Vector3();
+  function seat(root, y, yaw) { qy.setFromAxisAngle(XAX, yaw); root.quaternion.copy(qy); root.position.set(0, y, C0.z).sub(tv.copy(C0).applyQuaternion(qy)); }
+  function both(L, B, yaw) { glove.root.visible = hand.root.visible = true; seat(glove.root, PAIR, yaw); seat(hand.root, -PAIR, yaw); glove.setModule(null, 0); hand.setModule(null, 0); glove.setPose(L); hand.setPose(B); }
+  const wholeView = { target: new THREE.Vector3(0, 0, 0.098), U: new THREE.Vector3(1, 0, 0), D: new THREE.Vector3(0, 0, 1), S: new THREE.Vector3(0, -1, 0), turntable: true, fitW: 0.48, fitH: 0.26 };
+
+  V.hero = makeView("#cvHero", Object.assign({}, wholeView, { th: 0.55, ph: 0.3, spin: 0.07,
+    apply() { const [L, B] = idlePose(this.t || 0); both(L, B, this.th); glove.showAxes(); hand.showAxes(); }, animated: true }));
+  V.iso = makeView("#cvIso", Object.assign({}, wholeView, { th: 0.35, ph: 0.2, spin: 0,
+    apply() {
+      const k = state.joint, name = H.motors[k], w = reduced ? 0 : Math.sin((this.t || 0) * 2.4) * 11 * DEG;
+      const L = pose0L.slice(), B = pose0B.slice(); L[k] += w; B[k] += sgn[k] * w; both(L, B, this.th);
+      glove.showAxes([["anat:" + k, AXIS]]); hand.showAxes([["anat:" + k, AXIS]]);
+    }, animated: true }));
+  V.mech = makeView("#cvMech", { th: -0.45, ph: 0.25, th0: -0.45, spin: 0, turntable: false,
+    fit() { const m = H.models.glove.modules[state.mod], f = m.frame; this.S.set(f[0], f[3], f[6]); this.U.set(f[1], f[4], f[7]); this.D.set(f[2], f[5], f[8]); this.target.fromArray(m.center); this.r = m.radius; this.th = this.th0; this.ph = 0.25; },
+    apply() {
+      const m = H.models.glove.modules[state.mod], t = this.t || 0;
+      hand.root.visible = false; glove.root.visible = true; glove.root.position.set(0, 0, 0); glove.root.quaternion.identity();
+      let e = state.explode; const q = new Array(N).fill(0);
+      if (state.motion) {
+        e = 0; const per = 2.6, tt = (performance.now() - state.mt0) / 1000, d = Math.floor(tt / per) % m.dofs.length, u = (tt % per) / per, f = m.dofs[d];
+        const lo = H.ranges[f.joint][0], hi = H.ranges[f.joint][1], far = Math.abs(lo) > Math.abs(hi) ? lo : hi;
+        q[f.joint] = far * Math.sin(Math.PI * u) ** 2;
+      } else if (!state.explodeUser && !reduced) { e = 0.12 + 0.88 * (0.5 - 0.5 * Math.cos(t * 0.75)); $("#explode").value = Math.round(e * 100); }
+      this.eNow = this.eNow === undefined ? e : this.eNow + (e - this.eNow) * 0.18;
+      glove.setPose(q); glove.setModule(state.mod, this.eNow);
+      this.fitW = this.fitH = (this.r || 0.06) * (1.75 + 1.35 * this.eNow);
+      glove.showAxes(this.eNow < 0.22 ? m.dofs.map((f, i) => [f.virtual ? "virtual:" + f.name : f.name, DOF_COL[i % 4]]) : null);
+    }, animated: true });
+  V.mech.fit();
+  V.replay = makeView("#cvReplay", Object.assign({}, wholeView, { th: -2.5, ph: 0.3, spin: 0,
+    apply() { const f = state.rt * rp.fps; both(frameOf(rp, "qL", f), frameOf(rp, "qB", f), this.th); glove.showAxes(); hand.showAxes(); }, animated: true }));
+
+  /* clips and the traces under the replay */
+  const CLIP_TEXT = {
+    twist_index: ["Twist · index", "Thumb and index finger pinch an object and twist it, four times."],
+    twist_mid: ["Twist · middle", "The same twist with the middle finger, five times."],
+    twist_ring: ["Twist · ring", "The same twist with the ring finger, five times."],
+    pen_ring: ["Roll a pen · ring", "A pen rolled back and forth between the thumb and the ring finger."],
+    squeeze_mid: ["Squeeze harder · middle", "Thumb and middle finger hold an object lightly, then squeeze. Three holds."],
+    free: ["Free motion", "The hand opens and closes with nothing in it. No lock engages."],
+  };
+  const tabs = $("#clipTabs");
+  tabs.innerHTML = CLIPS.map((c, i) => `<button class="tab" role="tab" data-clip="${i}" aria-selected="${i === 0}">${(CLIP_TEXT[c.key] || [c.key])[0]}</button>`).join("");
+  function setClip(i) {
+    rp = CLIPS[i]; state.rt = 0; state.dur = rp.n / rp.fps;
+    const nice = (arr) => [100, 150, 200, 300, 400, 500, 600, 800, 1000, 1200, 1500, 2000].find((m) => m >= Math.max(...arr)) || 2500;      // each lane's axis ends at the first round value above its own peak
+    rp.maxA = rp.maxA || nice(rp.iA); rp.maxB = rp.maxB || nice(rp.iB);
+    tabs.querySelectorAll(".tab").forEach((t, k) => t.setAttribute("aria-selected", k === i));
+    $("#clipNote").textContent = (CLIP_TEXT[rp.key] || ["", ""])[1] + " Recorded at " + rp.t0.toFixed(0) + "–" + (rp.t0 + rp.n / rp.fps).toFixed(0) + " s of the session.";
+    markDirty();
+  }
+  tabs.addEventListener("click", (e) => { const b = e.target.closest(".tab"); if (b) setClip(+b.dataset.clip); });
+  setClip(0);
+  const tr = $("#cvTraces"), tctx = tr.getContext("2d");
+  function drawTraces() {
+    const r = tr.getBoundingClientRect(), dpr = Math.min(window.devicePixelRatio || 1, 2), w = Math.round(r.width * dpr), h = Math.round(r.height * dpr);
+    if (w < 2) return; if (tr.width !== w || tr.height !== h) { tr.width = w; tr.height = h; }
+    const c = tctx, n = rp.n, padL = 64 * dpr, padR = 14 * dpr, x = (i) => padL + (w - padL - padR) * i / (n - 1), lanes = [[0.09, 0.44], [0.52, 0.87]];
+    const ink = css("--ink"), muted = css("--muted"), line = css("--line");
+    c.clearRect(0, 0, w, h); c.font = `${11 * dpr}px ${css("--mono")}`; c.textBaseline = "middle";
+    c.fillStyle = css("--loop"); c.globalAlpha = 0.14;                 // when the pair was locked
+    let a = -1; for (let i = 0; i <= n; i++) { const on = i < n && rp.lock[i]; if (on && a < 0) a = i; if (!on && a >= 0) { c.fillRect(x(a), h * 0.05, x(i - 1) - x(a), h * 0.83); a = -1; } }
+    c.globalAlpha = 1;
+    const lane = (k, arr, max, color, label) => {
+      const y0 = h * lanes[k][1], y1 = h * lanes[k][0];
+      c.strokeStyle = line; c.lineWidth = 1; c.beginPath(); c.moveTo(padL, y0); c.lineTo(w - padR, y0); c.moveTo(padL, y1); c.lineTo(w - padR, y1); c.stroke();
+      c.fillStyle = muted; c.textAlign = "right"; c.fillText("0", padL - 8 * dpr, y0); c.fillText(max + " mA", padL - 8 * dpr, y1);
+      c.fillStyle = ink; c.textAlign = "left"; c.fillText(label, padL + 6 * dpr, y1 + 10 * dpr);
+      c.strokeStyle = color; c.lineWidth = 2 * dpr; c.lineJoin = "round"; c.beginPath();
+      for (let i = 0; i < n; i++) { const y = y0 + (y1 - y0) * Math.min(1, arr[i] / max); i ? c.lineTo(x(i), y) : c.moveTo(x(i), y); } c.stroke();
+    };
+    lane(0, rp.iB, rp.maxB, css("--hand"), "HAND"); lane(1, rp.iA, rp.maxA, css("--glove"), "GLOVE");
+    c.fillStyle = muted; c.textAlign = "center";
+    for (let sec = 0; sec <= (n - 1) / rp.fps; sec += 3) c.fillText(sec + " s", x(Math.min(n - 1, sec * rp.fps)), h * 0.95);
+    const cx = x(clamp(state.rt * rp.fps, 0, n - 1)); c.strokeStyle = ink; c.lineWidth = 1.5 * dpr; c.beginPath(); c.moveTo(cx, h * 0.04); c.lineTo(cx, h * 0.89); c.stroke();
+  }
+
+  const io = new IntersectionObserver((es) => { for (const e of es) for (const k in V) if (V[k].canvas === e.target) { V[k].visible = e.isIntersecting; V[k].dirty = true; } }, { rootMargin: "120px" });
+  for (const k in V) io.observe(V[k].canvas);
+  let trVisible = false; new IntersectionObserver((es) => { trVisible = es[0].isIntersecting; }).observe(tr);
+  addEventListener("resize", markDirty);
+  $("#heroLoading").hidden = true;
+
+  let last = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    if (state.playing && V.replay.visible) { state.rt += dt; const T = rp.n / rp.fps; if (state.rt >= T) state.rt = 0; if (document.activeElement !== $("#scrub")) $("#scrub").value = Math.round(state.rt / T * 1000); }
+    $("#clock").textContent = state.rt.toFixed(1) + " s";
+    for (const k in V) {
+      const v = V[k]; if (!v.visible) continue;
+      if (!reduced) { v.t = (v.t || 0) + dt; if (v.spin && now - v.lastDrag > 2500) v.th += v.spin * dt; }
+      if (v.dirty || (v.animated && !reduced) || k === "replay") { draw(v); v.dirty = false; }
+    }
+    if (trVisible) drawTraces();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+  document.documentElement.dataset.ready = "1";
+})().catch((e) => fail("3D view stopped: " + e.message));
+})();
+</script>
+
+<script>
+/* Demonstrations: pinch-aligned mean currents (SVG) and one clip per group with traces synced to the video (canvas).
+   Data: assets/demos.json + assets/clips/, written by tools/web_demos.py. Independent of the 3D code above. */
+(() => {
+"use strict";
+const $ = (s) => document.querySelector(s);
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const nice = (v, step) => Math.ceil(v / step) * step;
+const sgn = (v, d = 0) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(d);
+const GROUPS = [{ g: "A", name: "feedback on", dash: "" }, { g: "B", name: "feedback off", dash: "6 5" }];
+const LANES = [
+  { key: "glove", word: "Glove", title: "Glove · what the operator feels", col: "--glove", step: 25 },
+  { key: "hand", word: "Hand", title: "Hand · how hard it grips", col: "--hand", step: 50 },
+];
+const colOf = (ln, G) => (G.g === "A" ? `var(${ln.col})` : "var(--off)");
+let D = null;
+
+fetch("assets/demos.json").then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((d) => {
+  D = d;
+  $("#avgLoad").remove();
+  const avg = makeAvg({ box: "#avgPlot", tip: "#avgTip", fig: "#avgFig", table: "#avgTable", G: D.groups });
+  avg.draw();
+  new ResizeObserver(() => avg.draw()).observe($("#avgPlot"));
+  avg.table();
+  player();
+  if (D.rollouts && D.rollouts.A) {
+    $("#polLoad").remove();
+    strip();
+    new ResizeObserver(() => strip()).observe($("#polPlot"));
+    drawPolCurve();
+    new ResizeObserver(() => drawPolCurve()).observe($("#polCurve"));
+    polTable();
+  }
+  if (D.chips && D.chips.groups && D.chips.groups.A) {            // the chip task; its own try, so a problem here leaves the blueberry plots alone
+    try {
+      $("#chipLoad").remove();
+      const ch = makeAvg({ box: "#chipAvg", tip: "#chipAvgTip", fig: "#chipFig", table: "#chipTable", G: D.chips.groups });
+      ch.draw();
+      new ResizeObserver(() => ch.draw()).observe($("#chipAvg"));
+      ch.table();
+      chipClip();
+    } catch (e) { const c = $("#chipLoad"); if (c) c.textContent = "The chip currents did not load."; }
+  }
+}).catch(() => {
+  [["#avgLoad", "The recorded currents did not load."], ["#polLoad", "The runs did not load."], ["#chipLoad", "The chip currents did not load."]]
+    .forEach(([k, m]) => { const e = $(k); if (e) e.textContent = m; });
+});
+
+/* two uncut policy runs in the media section: tabs, a closure timeline under the video, playhead synced to the video.
+   Data: assets/clips/run_a70{,_retry}.json + .mp4, written by tools/web_demos.py --run-clip. */
+{
+  const v = $("#runVid"), line = $("#runLine"), btn = $("#runPlay"), clock = $("#runClock");
+  const RUNS = {
+    clean: { json: "assets/clips/run_a70.json", h: "Three blueberries, no operator",
+      p: "π0.5 trained on the 70 feedback-on blueberry demonstrations, with the hand's recent joint angles and motor currents as an extra input, drives the arm and the hand from the two cameras alone. Here every pinch lands." },
+    squash: { json: "assets/clips/run_b70_squash.json", h: "Feedback-off policy: a squashed berry", peak: true, inBowl: "1 of 3, not finished",
+      p: "The policy trained on the 70 feedback-off demonstrations, on a run it did not finish. It puts one berry in the bowl. In the closure that starts at 83 s, a second berry is squashed. The line below the video is the hand current for the whole run." },
+    retry: { json: "assets/clips/run_a70_retry.json", h: "Missing, then trying again",
+      p: "The same policy on another run. At the second berry it closes on nothing twice, opens and re-aims, and gets it on the third try. For the last berry it twice carries an empty hand to the bowl, comes back, and keeps looking until it has it. Nothing here is scripted: every move comes from what the cameras and the hand report." },
+    chips: { json: "assets/clips/run_chip_a70.json", h: "Two potato chips, thumb and ring finger",
+      aria: "Head camera view of the robot arm and hand picking two potato chips into a bowl on their own, wrist camera inset, four times real speed",
+      p: "π0.5 trained on the 70 feedback-on potato-chip demonstrations, with three cameras and the hand's recent joint angles and motor currents as inputs. It carries the first chip to the bowl, closes once on the second without lifting it, opens, and takes it on the next try." },
+  };
+  const ARIA0 = "Head camera view of the robot arm and hand picking blueberries into a bowl on their own, wrist camera inset, four times real speed";
+  const R = {};
+  let cur = "chips", want = !reduced, visible = false, raf = 0, W = 0;
+  const J = () => R[cur];
+  const span = () => J().dur;
+  const tNow = () => Math.min(span(), v.currentTime * J().speed);
+  const kindText = (k) => J().thing === "chip" ? (k === "carry" ? "chip carried to the bowl" : "closed without picking it up")
+                                               : (k === "carry" ? "berry carried to the bowl" : "closed on nothing");
+
+  function facts() {
+    const j = J(), parts = [];
+    if (j.n_miss + j.n_empty) parts.push(`${j.n_miss + j.n_empty} ${j.thing === "chip" ? "without a chip" : "on nothing"}`);
+    $("#runH").textContent = RUNS[cur].h;
+    $("#runP").textContent = RUNS[cur].p;
+    const o = RUNS[cur];
+    $("#runFacts").innerHTML =
+      `<div><dt>Run</dt><dd>${Math.round(j.dur)} s, shown at ${j.speed}×</dd></div>` +
+      `<div><dt>In the bowl</dt><dd>${o.inBowl || j.in_bowl + " of " + (j.items || 3)}</dd></div>` +
+      `<div><dt>Closures</dt><dd>${j.closures.length}${parts.length ? ": " + j.n_carry + " carried, " + parts.join(", ") : ", all carried"}</dd></div>` +
+      (o.peak ? `<div><dt>Peak hand current</dt><dd>${Math.round(j.peak.sum_mA)} mA at ${Math.round(j.peak.sum_t)} s</dd></div>`
+              : `<div><dt>Hand grip current</dt><dd>${Math.round(j.grip)} mA</dd></div>`);
+    $("#runSpeed").textContent = `${j.speed}× speed`;
+  }
+  function draw() {
+    W = Math.round(line.clientWidth);
+    if (!W || !J()) return;
+    const j = J(), HH = 64, x = (t) => 2 + (W - 4) * t / j.dur;
+    const ymax = Math.max(200, Math.ceil(Math.max(...j.cur) / 50) * 50), y = (v) => HH - 3 - (HH - 16) * v / ymax;
+    let s = `<defs><pattern id="hatchE" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2" height="5" fill="var(--off)" opacity=".55"/></pattern></defs>`;
+    s += `<line x1="2" x2="${W - 2}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-width="1"/>`;
+    j.closures.forEach((c) => {
+      const a = x(c.t0), w = Math.max(3, x(c.t1) - a), tip = `${Math.round(c.t0)} s: ${kindText(c.kind)} · mean ${Math.round(c.mean)} mA`;
+      if (c.kind === "carry") s += `<rect x="${a}" y="10" width="${w}" height="${HH - 12}" rx="2" fill="var(--hand)" opacity=".3"><title>${tip}</title></rect>`;
+      else s += `<rect x="${a + 0.75}" y="10.75" width="${w - 1.5}" height="${HH - 13.5}" rx="2" fill="none" stroke="var(--off)" stroke-width="1.5"><title>${tip}</title></rect>`;
+    });
+    s += `<path d="M${j.cur.map((v, i) => `${x(i * j.cur_dt).toFixed(1)},${y(v).toFixed(1)}`).join("L")}" fill="none" stroke="var(--ink-2)" stroke-width="1.2" stroke-linejoin="round"/>`;
+    s += `<text class="ax" x="4" y="${y(ymax) + 9}">${ymax} mA</text>`;
+    s += `<line id="runHead" x1="2" x2="2" y1="0" y2="${HH}" stroke="var(--glove)" stroke-width="2" stroke-linecap="round"/>`;
+    line.innerHTML = `<svg width="${W}" height="${HH}" viewBox="0 0 ${W} ${HH}" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
+    line.setAttribute("aria-valuemax", Math.round(j.dur));
+    head();
+  }
+  function head() {
+    const h = line.querySelector("#runHead");
+    if (!h || !J()) return;
+    const t = tNow(), X = 2 + (W - 4) * t / span();
+    h.setAttribute("x1", X); h.setAttribute("x2", X);
+    clock.textContent = `${Math.round(t)} s`;
+    line.setAttribute("aria-valuenow", Math.round(t));
+  }
+  const loop = () => { head(); raf = v.paused ? 0 : requestAnimationFrame(loop); };
+  const sync = () => {
+    if (want && visible) v.play().catch(() => {}); else v.pause();
+    btn.textContent = want ? "Pause" : "Play"; btn.setAttribute("aria-pressed", String(want));
+  };
+  v.addEventListener("play", () => { if (!raf) raf = requestAnimationFrame(loop); });
+  v.addEventListener("seeked", head);
+  btn.addEventListener("click", () => { want = !want; sync(); });
+  const seek = (ev) => { const r = line.getBoundingClientRect(); v.currentTime = Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width)) * span() / J().speed; head(); };
+  let drag = false;
+  line.addEventListener("pointerdown", (ev) => { drag = true; line.setPointerCapture(ev.pointerId); seek(ev); });
+  line.addEventListener("pointermove", (ev) => { if (drag) seek(ev); });
+  line.addEventListener("pointerup", () => { drag = false; });
+  line.addEventListener("keydown", (ev) => {
+    const d = ev.key === "ArrowRight" ? 5 : ev.key === "ArrowLeft" ? -5 : 0;
+    if (d) { ev.preventDefault(); v.currentTime = Math.max(0, (tNow() + d) / J().speed); head(); }
+  });
+  function show(k) {
+    cur = k;
+    document.querySelectorAll(".run-tabs .tab").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.run === k)));
+    if (v.getAttribute("src") !== J().video) { v.src = J().video; v.load(); }
+    v.setAttribute("aria-label", RUNS[k].aria || ARIA0);
+    facts(); draw(); sync();
+  }
+  document.querySelectorAll(".run-tabs .tab").forEach((b) => b.addEventListener("click", () => { if (R[b.dataset.run]) show(b.dataset.run); }));
+  Promise.all(Object.entries(RUNS).map(([k, o]) => fetch(o.json).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((j) => { R[k] = j; })))
+    .then(() => { show("chips"); new ResizeObserver(() => { if (Math.round(line.clientWidth) !== W) draw(); }).observe(line); })
+    .catch(() => { $("#runFacts").innerHTML = ""; });
+  new IntersectionObserver((es) => es.forEach((e) => { visible = e.isIntersecting; if (J()) sync(); }), { threshold: 0.4 }).observe(v);
+}
+
+/* ---------- averaged pinch, two lanes on one time axis. o.G = {A: {glove, hand}, B: …}; blueberries and chips each make one ---------- */
+function makeAvg(o) {
+  const groups = GROUPS.filter((G) => o.G[G.g]), t = D.t, n = t.length;
+  let lastW = 0;
+  function draw() {
+    const box = $(o.box), W = Math.round(box.clientWidth);
+    if (!W || W === lastW) return;
+    lastW = W;
+    const narrow = W < 560;
+    const L = 40, R = narrow ? 10 : 112, top = 30, laneH = narrow ? 140 : 160, gap = 50, H = top + 2 * laneH + gap + 40;
+    const x = (v) => L + (W - L - R) * (v - t[0]) / (t[n - 1] - t[0]);
+    const lanes = LANES.map((ln, i) => {
+      const max = nice(Math.max(...groups.map((G) => Math.max(...o.G[G.g][ln.key].hi))), ln.step);
+      const y0 = top + i * (laneH + gap);
+      return { ...ln, max, y0, y: (v) => y0 + laneH * (1 - v / max) };
+    });
+    const P = (arr, ln) => t.map((tv, k) => `${x(tv).toFixed(1)},${ln.y(arr[k]).toFixed(1)}`);
+    let s = "";
+    lanes.forEach((ln) => {
+      s += `<text class="lab" x="${L}" y="${ln.y0 - 12}" style="font-weight:600">${ln.title}</text>`;
+      s += `<text class="ax" x="${L - 8}" y="${ln.y0 - 12}" text-anchor="end">mA</text>`;
+      for (let v = 0; v <= ln.max; v += ln.step) {
+        s += `<line x1="${L}" x2="${W - R}" y1="${ln.y(v)}" y2="${ln.y(v)}" stroke="var(--line)" stroke-width="1"/>`;
+        s += `<text class="ax" x="${L - 8}" y="${ln.y(v) + 4}" text-anchor="end">${v}</text>`;
+      }
+      s += `<line x1="${x(0)}" x2="${x(0)}" y1="${ln.y0}" y2="${ln.y0 + laneH}" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="3 4"/>`;
+      [...groups].reverse().forEach((G) => {                         // feedback off first, so feedback on draws on top
+        const d = o.G[G.g][ln.key], c = colOf(ln, G);
+        s += `<path d="M${P(d.hi, ln).join("L")}L${P(d.lo, ln).reverse().join("L")}Z" fill="${c}" opacity="${G.g === "A" ? 0.2 : 0.14}"/>`;
+        s += `<path d="M${P(d.mean, ln).join("L")}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"${G.dash ? ` stroke-dasharray="${G.dash}"` : ""}/>`;
+      });
+      if (!narrow) {                                                   // direct labels at the line ends, pushed apart if they would touch
+        const ys = groups.map((G) => ln.y(o.G[G.g][ln.key].mean[n - 1]));
+        if (ys.length > 1 && Math.abs(ys[0] - ys[1]) < 16) { const m = (ys[0] + ys[1]) / 2, k = ys[0] <= ys[1] ? -8 : 8; ys[0] = m + k; ys[1] = m - k; }
+        groups.forEach((G, k) => { s += `<text class="lab" x="${W - R + 8}" y="${ys[k] + 4}">${G.name}</text>`; });
+      }
+    });
+    s += `<text class="ax" x="${x(0) + 6}" y="${lanes[0].y0 + 12}">fingers close</text>`;
+    const yx = lanes[1].y0 + laneH;
+    for (let v = -1; v <= 3; v++) s += `<text class="ax" x="${x(v)}" y="${yx + 18}" text-anchor="middle">${sgn(v)}</text>`;
+    s += `<text class="ax" x="${(L + W - R) / 2}" y="${yx + 36}" text-anchor="middle">seconds from the start of the pinch</text>`;
+    s += `<line class="aX" y1="${lanes[0].y0}" y2="${yx}" stroke="var(--ink)" stroke-width="1" visibility="hidden"/>`;
+    s += `<g class="aDots" visibility="hidden">` + lanes.map((ln, i) => groups.map((G, k) => `<circle r="4.5" fill="${colOf(ln, G)}" stroke="var(--card)" stroke-width="2" data-l="${i}" data-g="${k}"/>`).join("")).join("") + `</g>`;
+    s += `<rect class="aHit" x="${L}" y="${lanes[0].y0 - 24}" width="${W - L - R}" height="${yx - lanes[0].y0 + 48}" fill="transparent"/>`;
+    box.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
+
+    const hit = box.querySelector(".aHit"), vl = box.querySelector(".aX"), dots = box.querySelector(".aDots"), tip = $(o.tip);
+    const show = (ev) => {
+      const r = box.getBoundingClientRect();
+      const k = Math.max(0, Math.min(n - 1, Math.round((ev.clientX - r.left - L) / (W - L - R) * (n - 1))));
+      const X = x(t[k]);
+      vl.setAttribute("x1", X); vl.setAttribute("x2", X); vl.setAttribute("visibility", "visible"); dots.setAttribute("visibility", "visible");
+      dots.querySelectorAll("circle").forEach((c) => { const ln = lanes[+c.dataset.l], G = groups[+c.dataset.g]; c.setAttribute("cx", X); c.setAttribute("cy", ln.y(o.G[G.g][ln.key].mean[k])); });
+      tip.innerHTML = `<div class="h">${sgn(t[k], 2)} s</div>` + lanes.map((ln) => groups.map((G) =>
+        `<div class="r"><span><i class="${G.dash ? "d" : ""}" style="background:${colOf(ln, G)}"></i>${ln.word}, ${G.name}</span><b>${Math.round(o.G[G.g][ln.key].mean[k])} mA</b></div>`).join("")).join("");
+      tip.hidden = false;
+      const fig = $(o.fig).getBoundingClientRect(), tw = tip.offsetWidth;
+      let left = ev.clientX - fig.left + 16;
+      if (left + tw > fig.width - 8) left = ev.clientX - fig.left - tw - 16;
+      tip.style.left = Math.max(8, left) + "px";
+      tip.style.top = (r.top - fig.top + lanes[0].y0) + "px";
+    };
+    const hide = () => { vl.setAttribute("visibility", "hidden"); dots.setAttribute("visibility", "hidden"); tip.hidden = true; };
+    hit.addEventListener("pointermove", show);
+    hit.addEventListener("pointerdown", show);
+    hit.addEventListener("pointerleave", hide);
+  }
+  function table() {
+    const ts = [-0.5, 0, 0.5, 1, 1.5, 2, 2.5, 3];
+    const idx = ts.map((v) => t.reduce((b, tv, k) => (Math.abs(tv - v) < Math.abs(t[b] - v) ? k : b), 0));
+    let h = `<table><thead><tr><th>Mean current, mA</th>${ts.map((v) => `<th>${sgn(v, 1)} s</th>`).join("")}</tr></thead><tbody>`;
+    LANES.forEach((ln) => groups.forEach((G) => { h += `<tr><th>${ln.word}, ${G.name}</th>${idx.map((k) => `<td>${Math.round(o.G[G.g][ln.key].mean[k])}</td>`).join("")}</tr>`; }));
+    $(o.table).innerHTML = h + "</tbody></table>";
+  }
+  return { draw, table };
+}
+
+/* ---------- chips: three clips in one player. "on" = one uncut feedback-on demonstration; "break1" / "break2" = the two feedback-off
+   pinches in which a chip broke, real speed with the break itself held at 1/8 speed (every recorded frame, no interpolation).
+   The line under the video is in real time; segs map video seconds to real seconds, so the playhead slows down through the slow part.
+   Data: demos.json "chips".clip / .breaks + assets/clips/chip_{on,break1,break2}.mp4, written by tools/web_demos.py ---------- */
+function chipClip() {
+  const on = D.chips.clip;
+  if (!on) return;
+  const v = $("#chipVid"), line = $("#chipLine"), btn = $("#chipPlay"), clock = $("#chipClock"), speedTag = $("#chipSpeed");
+  const C = { on: { ...on, t0: 0, t1: on.dur, segs: [{ v0: 0, v1: on.dur / on.speed, r0: 0, r1: on.dur, slow: 1 / on.speed }] } };
+  (D.chips.breaks || []).forEach((b) => { C[b.key] = b; });
+  const peakOn = D.chips.groups.A.peak_carried_median;
+  const TXT = {
+    on: { h: "Feedback on: two chips, uncut", tags: ["Side camera", "Head", "Wrist"],
+      aria: "Side camera close-up of the robot hand picking two potato chips off a box into a bowl, with the head and wrist cameras beside it, two times real speed",
+      p: "The large view is the side camera, level with the box top. It shows how far the fingertips are above the chip. The glove pushes back each time the fingers meet a chip, and the hand current stays low." },
+    break1: { h: "Feedback off: the chip snaps in the pinch", tags: ["Wrist camera", "Side", "Head"], chip: "snapped in two",
+      aria: "Wrist camera close-up of the robot fingertips closing on a potato chip, which folds and snaps, in slow motion; side and head cameras beside it",
+      p: "With feedback off, the glove gives the operator nothing to feel. As the fingers close on this chip, the hand current climbs to PEAK mA and the chip folds and snaps. The hand carries both pieces to the bowl." },
+    break2: { h: "Feedback off: the chip shatters on the box", tags: ["Wrist camera", "Side", "Head"], chip: "in pieces",
+      aria: "Wrist camera close-up of the robot fingertips closing on a potato chip, which bursts into pieces, in slow motion; side and head cameras beside it",
+      p: "Feedback off again. The hand current reaches PEAK mA as the fingers close, and the chip bursts into pieces that stay on the box." },
+  };
+  const tabs = [...document.querySelectorAll(".chip-tabs .tab")];
+  tabs.forEach((b) => { if (!C[b.dataset.chip]) b.hidden = true; });
+  let cur = "on", want = !reduced, visible = false, raf = 0, W = 0, tagNow = "";
+  const J = () => C[cur];
+  const HH = 136;
+  const LN = [{ key: "glove", word: "glove", col: "var(--glove)", y0: 16, h: 34 }, { key: "hand", word: "hand", col: "var(--hand)", y0: 72, h: 56 }];
+  LN.forEach((ln) => { ln.max = Math.max(100, Math.ceil(Math.max(...Object.values(C).map((c) => Math.max(...c[ln.key]))) / 50) * 50); });   // one axis per lane for all clips
+  const segAtV = (vt) => J().segs.find((s) => vt < s.v1) || J().segs[J().segs.length - 1];
+  const segAtT = (t) => J().segs.find((s) => t < s.r1) || J().segs[J().segs.length - 1];
+  const tOf = (vt) => { const s = segAtV(vt); return Math.min(s.r1, s.r0 + (vt - s.v0) * (s.r1 - s.r0) / (s.v1 - s.v0)); };
+  const vOf = (t) => { const s = segAtT(t); return s.v0 + (Math.max(s.r0, Math.min(s.r1, t)) - s.r0) * (s.v1 - s.v0) / (s.r1 - s.r0); };
+  const tNow = () => tOf(v.currentTime || 0);
+  const X = (q) => 2 + (W - 4) * (q - J().t0) / (J().t1 - J().t0);
+  const speedText = (s) => s.slow > 1 ? `Slow motion · 1/${s.slow}×` : s.slow < 1 ? `${1 / s.slow}× speed` : "Real speed";
+  const runs = (arr, dt, t0) => { const out = []; for (let a = 0; a < arr.length;) { if (!arr[a]) { a++; continue; } let b = a; while (b < arr.length && arr[b]) b++; out.push([t0 + a * dt, t0 + b * dt]); a = b; } return out; };
+
+  function facts() {
+    const j = J(), o = TXT[cur];
+    $("#chipH").textContent = o.h;
+    $("#chipP").textContent = o.p.replace("PEAK", j.peak ? j.peak.mA : "");
+    if (cur === "on") {
+      const car = j.closures.filter((c) => c.kind === "carry");
+      $("#chipFacts").innerHTML =
+        `<div><dt>Pinches</dt><dd>${j.closures.length}, ${car.length === j.closures.length ? "both carried" : car.length + " carried"}</dd></div>` +
+        `<div><dt>Glove rendering contact</dt><dd>${(j.gate.reduce((p, q) => p + q, 0) * j.cur_dt).toFixed(1)} s</dd></div>` +
+        `<div><dt>Hand grip current</dt><dd>${car.map((c) => Math.round(c.mean)).join(" and ")} mA</dd></div>` +
+        `<div><dt>Peak hand current</dt><dd>${Math.round(Math.max(...j.hand))} mA</dd></div>`;
+    } else {
+      const sl = j.segs.find((s) => s.slow > 1);
+      $("#chipFacts").innerHTML =
+        `<div><dt>Peak hand current</dt><dd>${j.peak.mA} mA</dd></div>` +
+        `<div><dt>Median peak, feedback on</dt><dd>${peakOn} mA</dd></div>` +
+        `<div><dt>Push-back at the glove</dt><dd>none</dd></div>` +
+        `<div><dt>Slow motion</dt><dd>${(sl.r1 - sl.r0).toFixed(1)} s at 1/${sl.slow} speed</dd></div>`;
+    }
+    [["#chipTagMain", 0], ["#chipTagTop", 1], ["#chipTagBot", 2]].forEach(([k, i]) => { $(k).textContent = o.tags[i]; });
+    document.querySelectorAll(".chip-run .only-on").forEach((e) => { e.hidden = cur !== "on"; });
+    document.querySelectorAll(".chip-run .only-break").forEach((e) => { e.hidden = cur === "on"; });
+  }
+  function draw() {
+    W = Math.round(line.clientWidth);
+    if (!W) return;
+    const j = J(), dt = j.cur_dt;
+    let s = "";
+    j.segs.filter((q) => q.slow > 1).forEach((q) => {
+      s += `<rect x="${X(q.r0)}" y="2" width="${Math.max(3, X(q.r1) - X(q.r0))}" height="${HH - 2}" rx="2" fill="var(--ink)" opacity=".09"><title>shown at 1/${q.slow} speed</title></rect>`;
+    });
+    LN.forEach((ln) => {
+      const arr = j[ln.key], y = (q) => ln.y0 + ln.h - ln.h * q / ln.max;
+      if (ln.key === "glove") runs(j.gate, dt, j.t0).forEach(([a, b]) => { s += `<rect x="${X(a)}" y="${ln.y0}" width="${Math.max(2, X(b) - X(a))}" height="${ln.h}" fill="var(--glove)" opacity=".14"/>`; });
+      else if (cur === "on") j.closures.forEach((c) => {
+        const a = X(c.t0), w = Math.max(3, X(c.t1) - a), tip = `${Math.round(c.t0)} s: ${c.kind === "carry" ? "chip carried to the bowl" : "closed on nothing"} · mean ${Math.round(c.mean)} mA`;
+        s += c.kind === "carry" ? `<rect x="${a}" y="${ln.y0}" width="${w}" height="${ln.h}" rx="2" fill="var(--hand)" opacity=".22"><title>${tip}</title></rect>`
+                                : `<rect x="${a + 0.75}" y="${ln.y0 + 0.75}" width="${w - 1.5}" height="${ln.h - 1.5}" rx="2" fill="none" stroke="var(--off)" stroke-width="1.5"><title>${tip}</title></rect>`;
+      });
+      s += `<line x1="2" x2="${W - 2}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" stroke-width="1"/>`;
+      s += `<path d="M${arr.map((q, i) => `${X(j.t0 + i * dt).toFixed(1)},${y(q).toFixed(1)}`).join("L")}" fill="none" stroke="${ln.col}" stroke-width="1.6" stroke-linejoin="round"/>`;
+      s += `<text class="ax" x="${W - 4}" y="${ln.y0 - 4}" text-anchor="end">${ln.word} · ${W < 420 ? "" : "axis to "}${ln.max} mA</text>`;
+    });
+    if (j.snap_t != null) s += `<line x1="${X(j.snap_t)}" x2="${X(j.snap_t)}" y1="2" y2="${HH}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3 3"><title>the chip breaks</title></line>`;
+    s += `<line class="chipHead" x1="2" x2="2" y1="2" y2="${HH}" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>`;
+    line.innerHTML = `<svg width="${W}" height="${HH}" viewBox="0 0 ${W} ${HH}" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
+    line.setAttribute("aria-valuemin", Math.round(j.t0)); line.setAttribute("aria-valuemax", Math.round(j.t1));
+    head();
+  }
+  function head() {
+    const h = line.querySelector(".chipHead");
+    if (!h) return;
+    const j = J(), q = tNow(), x = X(q);
+    h.setAttribute("x1", x); h.setAttribute("x2", x);
+    clock.textContent = j.snap_t != null ? `${sgn(q - j.snap_t, 2)} s` : `${Math.round(q)} s`;      // break clips: time from the break
+    line.setAttribute("aria-valuenow", Math.round(q));
+    const sg = segAtV(v.currentTime || 0), txt = speedText(sg);
+    if (txt !== tagNow) { tagNow = txt; speedTag.textContent = txt; speedTag.classList.toggle("slow", sg.slow > 1); }
+  }
+  const loop = () => { head(); raf = v.paused ? 0 : requestAnimationFrame(loop); };
+  const sync = () => {
+    if (want && visible) v.play().catch(() => {}); else v.pause();
+    btn.textContent = want ? "Pause" : "Play"; btn.setAttribute("aria-pressed", String(want));
+  };
+  v.addEventListener("play", () => { if (!raf) raf = requestAnimationFrame(loop); });
+  ["seeked", "timeupdate"].forEach((e) => v.addEventListener(e, () => { if (!raf) head(); }));
+  btn.addEventListener("click", () => { want = !want; sync(); });
+  const seek = (ev) => { const r = line.getBoundingClientRect(), j = J(); v.currentTime = vOf(j.t0 + Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width)) * (j.t1 - j.t0)); head(); };
+  let drag = false;
+  line.addEventListener("pointerdown", (ev) => { drag = true; line.setPointerCapture(ev.pointerId); seek(ev); });
+  line.addEventListener("pointermove", (ev) => { if (drag) seek(ev); });
+  line.addEventListener("pointerup", () => { drag = false; });
+  line.addEventListener("keydown", (ev) => {
+    const j = J(), step = (j.t1 - j.t0) / 15, d = ev.key === "ArrowRight" ? step : ev.key === "ArrowLeft" ? -step : 0;
+    if (d) { ev.preventDefault(); v.currentTime = vOf(Math.max(j.t0, Math.min(j.t1, tNow() + d))); head(); }
+  });
+  function show(k) {
+    cur = k;
+    tabs.forEach((b) => b.setAttribute("aria-selected", String(b.dataset.chip === k)));
+    if (v.getAttribute("src") !== J().video) { v.src = J().video; v.load(); }
+    v.setAttribute("aria-label", TXT[k].aria);
+    facts(); draw(); sync();
+  }
+  tabs.forEach((b) => b.addEventListener("click", () => { if (C[b.dataset.chip]) show(b.dataset.chip); }));
+  show("on");
+  new ResizeObserver(() => { if (Math.round(line.clientWidth) !== W) draw(); }).observe(line);
+  new IntersectionObserver((es) => es.forEach((e) => { visible = e.isIntersecting; sync(); }), { threshold: 0.4 }).observe(v);
+}
+
+/* ---------- policy runs next to the demonstrations: grip current, one dot each ---------- */
+const med = (a) => { const s = [...a].sort((p, q) => p - q), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const runName = (q) => `run ${q.ep.slice(3)}`;
+
+/* ---------- mean hand current around a pinch: demonstrations | policies, two panels on one y-axis (stacked on phones) ---------- */
+function polSeries() {
+  const S = [
+    { name: "feedback on", col: "var(--hand)", pol: false, b: D.groups.A.hand3 },
+    { name: "feedback off", col: "var(--off)", pol: false, b: D.groups.B.hand3 },
+  ];
+  [["A", "trained on feedback-on demos", "var(--hand)"], ["B", "trained on feedback-off demos", "var(--off)"]].forEach(([g, name, col]) => {
+    const ro = D.rollouts && D.rollouts[g];
+    if (ro && ro.hand3) S.push({ name, col, pol: true, b: ro.hand3 });
+  });
+  return S;
+}
+let lastPC = 0;
+function drawPolCurve() {
+  const box = $("#polCurve"), W = Math.round(box.clientWidth);
+  if (!W || W === lastPC) return;
+  lastPC = W;
+  const S = polSeries(), t = D.t, n = t.length, narrow = W < 640;
+  const groups = [{ title: "Teleoperated demonstrations", S: S.filter((q) => !q.pol) }, { title: "Policy runs", S: S.filter((q) => q.pol) }].filter((g) => g.S.length);
+  const L = 40, R = 8, gapX = 40, top = 30, H0 = narrow ? 170 : 210, rowH = top + H0 + 46;
+  const cols = narrow ? 1 : groups.length, pw = (W - L - R - (cols - 1) * gapX) / cols, H = (narrow ? groups.length : 1) * rowH;
+  const max = nice(Math.max(...S.map((q) => Math.max(...q.b.hi))), 50);
+  let s = "";
+  const panels = groups.map((g, gi) => {
+    const ox = L + (narrow ? 0 : gi * (pw + gapX)), oy = narrow ? gi * rowH : 0;
+    const x = (v) => ox + pw * (v - t[0]) / (t[n - 1] - t[0]), y = (v) => oy + top + H0 * (1 - v / max);
+    s += `<text class="lab" x="${ox}" y="${oy + 12}" style="font-weight:600">${g.title}</text>`;
+    s += `<rect x="${ox}" y="${y(D.floor)}" width="${pw}" height="${y(0) - y(D.floor)}" fill="var(--ink)" opacity=".05"/>`;
+    for (let v = 0; v <= max; v += 50) {
+      s += `<line x1="${ox}" x2="${ox + pw}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/>`;
+      if (gi === 0 || narrow) s += `<text class="ax" x="${ox - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+    }
+    if (gi === 0 || narrow) s += `<text class="ax" x="${ox - 8}" y="${y(max) - 10}" text-anchor="end">mA</text>`;
+    s += `<line x1="${x(0)}" x2="${x(0)}" y1="${y(max)}" y2="${y(0)}" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="3 4"/>`;
+    const P = (arr) => t.map((tv, k) => `${x(tv).toFixed(1)},${y(arr[k]).toFixed(1)}`);
+    const sum = (q) => q.b.mean.reduce((p, v) => p + v, 0);
+    const upper = g.S.reduce((a, b) => (sum(b) > sum(a) ? b : a));
+    g.S.forEach((q) => {
+      s += `<path d="M${P(q.b.hi).join("L")}L${P(q.b.lo).reverse().join("L")}Z" fill="${q.col}" opacity=".16"/>`;
+      s += `<path d="M${P(q.b.mean).join("L")}" fill="none" stroke="${q.col}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+    });
+    g.S.forEach((q) => {                                              // upper line labelled above its band, lower one below; never on a band
+      const xc = q === upper ? 0.8 : 1.9, ks = t.map((_, k) => k).filter((k) => Math.abs(t[k] - xc) <= 0.8);
+      const yl = q === upper ? y(Math.max(...ks.map((k) => q.b.hi[k]))) - 7 : y(Math.min(...ks.map((k) => q.b.lo[k]))) + 15;
+      s += `<text class="lab" x="${x(xc)}" y="${yl}" text-anchor="middle">${q.name}</text>`;
+    });
+    for (let v = -1; v <= 3; v++) s += `<text class="ax" x="${x(v)}" y="${y(0) + 18}" text-anchor="middle">${sgn(v)}</text>`;
+    s += `<text class="ax" x="${ox + pw / 2}" y="${y(0) + 36}" text-anchor="middle">seconds from the start of the pinch</text>`;
+    s += `<line class="pcX" data-p="${gi}" y1="${y(max)}" y2="${y(0)}" stroke="var(--ink)" stroke-width="1" visibility="hidden"/>`;
+    s += g.S.map((q, k) => `<circle class="pcD" data-p="${gi}" data-k="${k}" r="4.5" fill="${q.col}" stroke="var(--card)" stroke-width="2" visibility="hidden"/>`).join("");
+    s += `<rect class="pcHit" data-p="${gi}" x="${ox}" y="${y(max)}" width="${pw}" height="${H0}" fill="transparent"/>`;
+    return { g, x, y, ox };
+  });
+  box.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
+  const tip = $("#polCurveTip");
+  const hideAll = () => { box.querySelectorAll(".pcX,.pcD").forEach((e) => e.setAttribute("visibility", "hidden")); tip.hidden = true; };
+  box.querySelectorAll(".pcHit").forEach((hit) => {
+    const pi = +hit.dataset.p, pn = panels[pi];
+    const show = (ev) => {
+      const r = box.getBoundingClientRect();
+      const k = Math.max(0, Math.min(n - 1, Math.round((ev.clientX - r.left - pn.ox) / pw * (n - 1)))), X = pn.x(t[k]);
+      hideAll();
+      box.querySelectorAll(`.pcX[data-p="${pi}"]`).forEach((e) => { e.setAttribute("x1", X); e.setAttribute("x2", X); e.setAttribute("visibility", "visible"); });
+      box.querySelectorAll(`.pcD[data-p="${pi}"]`).forEach((c) => { c.setAttribute("cx", X); c.setAttribute("cy", pn.y(pn.g.S[+c.dataset.k].b.mean[k])); c.setAttribute("visibility", "visible"); });
+      tip.innerHTML = `<div class="h">${pn.g.title}, ${sgn(t[k], 2)} s</div>` + pn.g.S.map((q) =>
+        `<div class="r"><span><i style="background:${q.col}"></i>${q.name}</span><b>${Math.round(q.b.mean[k])} mA</b></div>`).join("");
+      tip.hidden = false;
+      const fig = $("#polFig").getBoundingClientRect(), tw = tip.offsetWidth;
+      let left = ev.clientX - fig.left + 16;
+      if (left + tw > fig.width - 8) left = ev.clientX - fig.left - tw - 16;
+      tip.style.left = Math.max(8, left) + "px";
+      tip.style.top = (r.top - fig.top + pn.y(max)) + "px";
+    };
+    hit.addEventListener("pointermove", show);
+    hit.addEventListener("pointerdown", show);
+    hit.addEventListener("pointerleave", hideAll);
+  });
+}
+function stripRows() {
+  const rows = [
+    { name: "Demonstrations, feedback on", col: "var(--hand)", pts: D.groups.A.per_ep3.map(([ep, v]) => ({ v, ep })) },
+    { name: "Demonstrations, feedback off", col: "var(--off)", pts: D.groups.B.per_ep3.map(([ep, v]) => ({ v, ep })) },
+  ];
+  [["A", "Policy, trained on feedback on", "var(--hand)"], ["B", "Policy, trained on feedback off", "var(--off)"]].forEach(([g, name, col]) => {
+    const ro = D.rollouts[g];
+    if (ro) rows.push({ name, col, policy: true, pts: ro.per_ep.filter((r) => r.grip_top3 != null).map((r) => ({ v: r.grip_top3, ep: r.ep, r })) });
+  });
+  return rows;
+}
+let lastS = 0;
+function strip() {
+  const box = $("#polPlot"), W = Math.round(box.clientWidth);
+  if (!W || W === lastS) return;
+  lastS = W;
+  const rows = stripRows(), narrow = W < 620;
+  const L = narrow ? 6 : 232, R = 18, top = 8, rowH = narrow ? 78 : 56, H = top + rows.length * rowH + 40;
+  const max = nice(Math.max(...rows.flatMap((r) => r.pts.map((p) => p.v))), 50);
+  const x = (v) => L + (W - L - R) * v / max, yb = top + rows.length * rowH;
+  let s = `<rect x="${x(0)}" y="${top}" width="${x(D.floor) - x(0)}" height="${rows.length * rowH}" fill="var(--ink)" opacity=".06"/>`;
+  for (let v = 0; v <= max; v += 50) {
+    s += `<line x1="${x(v)}" x2="${x(v)}" y1="${top}" y2="${yb}" stroke="var(--line)" stroke-width="1"/>`;
+    s += `<text class="ax" x="${x(v)}" y="${yb + 18}" text-anchor="middle">${v}</text>`;
+  }
+  s += `<text class="ax" x="${(L + W - R) / 2}" y="${yb + 36}" text-anchor="middle">hand grip current, mA</text>`;
+  const dots = [];
+  rows.forEach((row, i) => {
+    const yc = top + i * rowH + rowH / 2 + (narrow ? 9 : 0);
+    if (i) s += `<line x1="${narrow ? L : 0}" x2="${W - R}" y1="${top + i * rowH}" y2="${top + i * rowH}" stroke="var(--line)" stroke-width="1"/>`;
+    s += narrow ? `<text class="lab" x="${L}" y="${yc - 20}" style="font-weight:600">${row.name}</text>`
+                : `<text class="lab" x="${L - 14}" y="${yc + 4}" text-anchor="end" style="font-weight:${row.policy ? 600 : 400}">${row.name}</text>`;
+    const m = med(row.pts.map((p) => p.v));                                // median tick first, so the dots sit on top of it
+    s += `<line x1="${x(m)}" x2="${x(m)}" y1="${yc - 13}" y2="${yc + 13}" stroke="var(--ink)" stroke-width="2" stroke-linecap="round"/>`;
+    s += `<text class="ax" x="${x(m)}" y="${narrow ? yc + 27 : yc - 17}" text-anchor="middle" style="fill:var(--ink)">${Math.round(m)}</text>`;
+    row.pts.forEach((p, k) => {
+      const cy = row.policy ? yc + (((k * 5) % 7) - 3) * 2.2 : yc + (((k * 7) % 11) - 5) * 1.5;   // fixed jitter so dots don't stack
+      const cx = x(p.v), ok = p.r && p.r.outcome === "success";
+      if (row.policy && p.r.grip_top3 != null && p.r.grip_top3 > p.v)         // finished run: bar up to the median of its 3 strongest pinches (the high end)
+        s += `<line x1="${cx}" x2="${x(p.r.grip_top3)}" y1="${cy}" y2="${cy}" stroke="${row.col}" stroke-width="3" stroke-linecap="round" opacity=".45"/>`;
+      s += row.policy
+        ? `<circle cx="${cx}" cy="${cy}" r="6.5" fill="${ok ? row.col : "var(--card)"}" stroke="${ok ? "var(--card)" : row.col}" stroke-width="2.25"/>`
+        : `<circle cx="${cx}" cy="${cy}" r="4" fill="${row.col}" fill-opacity=".55"/>`;
+      dots.push({ cx, cy, row, p });
+    });
+  });
+  s += `<text class="ax" x="${x(D.floor) - 5}" y="${yb - 6}" text-anchor="end">noise</text>`;
+  s += `<rect id="polHit" x="0" y="${top}" width="${W}" height="${rows.length * rowH}" fill="transparent"/>`;
+  box.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">${s}</svg>`;
+
+  const tip = $("#polTip"), hit = box.querySelector("#polHit");
+  const show = (ev) => {
+    const r = box.getBoundingClientRect(), mx = ev.clientX - r.left, my = ev.clientY - r.top;
+    let best = null, bd = 14 * 14;
+    dots.forEach((d) => { const dd = (d.cx - mx) ** 2 + (d.cy - my) ** 2 * 4; if (dd < bd) { bd = dd; best = d; } });
+    if (!best) { tip.hidden = true; return; }
+    const { row, p } = best, q = p.r;
+    tip.innerHTML = `<div class="h">${row.name}</div>` + (q
+      ? `<div class="r"><span>${runName(q)}</span><b>${q.outcome === "success" ? `finished, ${q.in_bowl} in bowl` : "not finished"}</b></div>` +
+        `<div class="r"><span>Grip, 3 strongest pinches</span><b>${Math.round(q.grip_top3)} mA</b></div>` +
+        `<div class="r"><span>Every pinch carried away</span><b>${Math.round(q.grip)} mA</b></div>` +
+        `<div class="r"><span>Past measured angle</span><b>${q.over_top3.toFixed(2)}°</b></div>` +
+        `<div class="r"><span>Closures, carried away</span><b>${q.closures}, ${q.carried}</b></div>` +
+        `<div class="r"><span>Run length</span><b>${Math.round(q.dur)} s</b></div>`
+      : `<div class="r"><span>Demonstration ${p.ep.slice(3)}</span><b>${Math.round(p.v)} mA</b></div>`);
+    tip.hidden = false;
+    const fig = $("#polFig").getBoundingClientRect(), tw = tip.offsetWidth;
+    let left = ev.clientX - fig.left + 16;
+    if (left + tw > fig.width - 8) left = ev.clientX - fig.left - tw - 16;
+    tip.style.left = Math.max(8, left) + "px";
+    tip.style.top = (r.top - fig.top + best.cy + 14) + "px";
+  };
+  hit.addEventListener("pointermove", show);
+  hit.addEventListener("pointerdown", show);
+  hit.addEventListener("pointerleave", () => { tip.hidden = true; });
+}
+
+function polTable() {
+  let h = `<table><thead><tr><th>Run</th><th>Result</th><th>Grip, 3 strongest, mA</th><th>Every pinch carried away, mA</th><th>Past measured</th><th>Closures</th><th>Carried away</th><th>Length</th></tr></thead><tbody>`;
+  [["A", "trained on feedback on"], ["B", "trained on feedback off"]].forEach(([g, name]) => {
+    const ro = D.rollouts[g];
+    if (!ro) return;
+    ro.per_ep.forEach((q) => {
+      h += `<tr><th>Policy ${name}, ${runName(q)}</th><td>${q.outcome === "success" ? `finished, ${q.in_bowl} in bowl` : "not finished"}</td>` +
+           `<td>${q.grip_top3 == null ? "–" : Math.round(q.grip_top3)}</td><td>${q.grip == null ? "–" : Math.round(q.grip)}</td><td>${q.over_top3 == null ? (q.over == null ? "–" : q.over.toFixed(2) + "° (all)") : q.over_top3.toFixed(2) + "°"}</td><td>${q.closures}</td><td>${q.carried}</td><td>${Math.round(q.dur)} s</td></tr>`;
+    });
+  });
+  h += `<tr><th>Demonstrations, feedback on (70)</th><td>all finished</td><td>${Math.round(D.groups.A.hand3_ep_median)}</td><td>${Math.round(D.groups.A.hand_ep_median)}</td><td>${D.groups.A.over3_ep_median.toFixed(2)}°</td><td colspan="3">median over demonstrations</td></tr>`;
+  h += `<tr><th>Demonstrations, feedback off (70)</th><td>all finished</td><td>${Math.round(D.groups.B.hand3_ep_median)}</td><td>${Math.round(D.groups.B.hand_ep_median)}</td><td>${D.groups.B.over3_ep_median.toFixed(2)}°</td><td colspan="3">median over demonstrations</td></tr>`;
+  $("#polTable").innerHTML = h + "</tbody></table>";
+}
+
+/* ---------- one clip per group, traces follow the video ---------- */
+function player() {
+  const vid = $("#demoVid"), cv = $("#demoTr"), ctx = cv.getContext("2d"), scrub = $("#demoScrub"), clock = $("#demoClock"), btn = $("#demoPlay");
+  const gmax = nice(Math.max(...D.clips.flatMap((c) => c.glove)), 25), hmax = nice(Math.max(...D.clips.flatMap((c) => c.hand)), 50);   // same axes for both clips
+  let C = null, playing = !reduced, seen = false, raf = 0;
+  function draw() {
+    if (!C) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || !h) return;
+    if (cv.width !== Math.round(w * dpr)) cv.width = Math.round(w * dpr);
+    if (cv.height !== Math.round(h * dpr)) cv.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    const L = 40, R = 14, T = 26, B = 28, gap = 36, lh = (h - T - B - gap) / 2;
+    const t = C.t, n = t.length, x = (v) => L + (w - L - R) * (v - t[0]) / (t[n - 1] - t[0]);
+    const isA = C.group === "A", mono = css("--mono"), text = css("--text");
+    const k = Math.max(0, Math.min(n - 1, Math.round((vid.currentTime || 0) * C.fps))), px = x(t[k]);
+    const lanes = [{ v: C.glove, max: gmax, step: 25, col: css("--glove"), name: "Glove current" }, { v: C.hand, max: hmax, step: 50, col: css("--hand"), name: "Hand current" }];
+    lanes.forEach((ln, i) => {
+      const y0 = T + i * (lh + gap), y = (v) => y0 + lh * (1 - v / ln.max);
+      if (i === 0) {                                                  // where the glove was rendering contact
+        ctx.fillStyle = css("--glove"); ctx.globalAlpha = 0.13;
+        for (let a = 0; a < n;) { if (!C.gate[a]) { a++; continue; } let b = a; while (b < n && C.gate[b]) b++; ctx.fillRect(x(t[a]), y0, x(t[Math.min(b, n - 1)]) - x(t[a]), lh); a = b; }
+        ctx.globalAlpha = 1;
+      }
+      ctx.strokeStyle = css("--line"); ctx.lineWidth = 1; ctx.fillStyle = css("--muted"); ctx.textAlign = "right"; ctx.font = `11px ${mono}`;
+      for (let v = 0; v <= ln.max; v += ln.step) { ctx.beginPath(); ctx.moveTo(L, Math.round(y(v)) + 0.5); ctx.lineTo(w - R, Math.round(y(v)) + 0.5); ctx.stroke(); ctx.fillText(v, L - 6, y(v) + 4); }
+      ctx.textAlign = "left"; ctx.fillStyle = css("--ink"); ctx.font = `600 12.5px ${text}`;
+      ctx.fillText(ln.name + " · mA" + (i === 0 && isA ? "   shaded: rendering contact" : ""), L, y0 - 9);
+      ctx.strokeStyle = css("--ink-2"); ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(Math.round(x(0)) + 0.5, y0); ctx.lineTo(Math.round(x(0)) + 0.5, y0 + lh); ctx.stroke();
+      ctx.strokeStyle = isA ? ln.col : css("--off"); ctx.lineWidth = 2; ctx.lineJoin = "round"; ctx.setLineDash(isA ? [] : [6, 5]);
+      ctx.beginPath(); ln.v.forEach((v, j) => (j ? ctx.lineTo(x(t[j]), y(v)) : ctx.moveTo(x(t[j]), y(v)))); ctx.stroke(); ctx.setLineDash([]);
+      const yy = y(ln.v[k]);
+      ctx.fillStyle = isA ? ln.col : css("--off"); ctx.beginPath(); ctx.arc(px, yy, 4.5, 0, 2 * Math.PI); ctx.fill();
+      ctx.strokeStyle = css("--card"); ctx.lineWidth = 2; ctx.stroke();
+      const right = px > w - 80;
+      ctx.fillStyle = css("--ink"); ctx.font = `500 12px ${mono}`; ctx.textAlign = right ? "right" : "left";
+      ctx.fillText(Math.round(ln.v[k]) + " mA", px + (right ? -10 : 10), Math.max(y0 + 12, yy - 8));
+    });
+    ctx.fillStyle = css("--muted"); ctx.font = `11px ${mono}`; ctx.textAlign = "center";
+    for (let v = Math.ceil(t[0]); v <= Math.floor(t[n - 1]); v++) ctx.fillText(sgn(v) + (v === Math.floor(t[n - 1]) ? " s" : ""), x(v), h - B + 18);
+    ctx.strokeStyle = css("--ink"); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(px, T - 6); ctx.lineTo(px, h - B + 4); ctx.stroke();
+    scrub.value = Math.round(1000 * k / (n - 1));
+    clock.textContent = sgn(t[k], 1) + " s";
+  }
+  function loop() { draw(); raf = vid.paused ? 0 : requestAnimationFrame(loop); }
+  function note() {
+    const med = (a) => { const s = [...a].sort((p, q) => p - q); return s[Math.floor(s.length / 2)]; };
+    const hold = (v) => med(v.filter((_, j) => C.t[j] >= 0.5 && C.t[j] <= 2.5));     // while the berry is held
+    const base = med(C.glove.filter((_, j) => C.t[j] < -0.5));
+    const rise = hold(C.glove) - base, grip = hold(C.hand);
+    const ep = "#" + parseInt(C.ep.split("ep_").pop(), 10);
+    $("#demoNote").textContent = C.group === "A"
+      ? `Feedback on, demonstration ${ep}. While the berry is held, the glove's current sits ${Math.round(rise)} mA above its level before the pinch, and the hand grips at about ${Math.round(grip)} mA.`
+      : `Feedback off, demonstration ${ep}. While the berry is held, the glove's current stays within ${Math.round(Math.abs(rise))} mA of its level before the pinch, and the hand grips at about ${Math.round(grip)} mA.`;
+  }
+  function setPlaying(p) {
+    playing = p; btn.setAttribute("aria-pressed", p); btn.textContent = p ? "Pause" : "Play";
+    if (p && seen) vid.play().catch(() => {}); else if (!p) vid.pause();
+  }
+  function setClip(key) {
+    C = D.clips.find((c) => c.key === key);
+    document.querySelectorAll("[data-clip]").forEach((b) => b.setAttribute("aria-selected", b.dataset.clip === key));
+    if (vid.getAttribute("src") !== C.video) vid.setAttribute("src", C.video);
+    vid.currentTime = 0;
+    note(); draw();
+    if (playing && seen) vid.play().catch(() => {});
+  }
+  vid.addEventListener("play", () => { if (!raf) raf = requestAnimationFrame(loop); });
+  ["seeked", "loadeddata", "pause", "timeupdate"].forEach((e) => vid.addEventListener(e, () => { if (!raf) draw(); }));
+  btn.addEventListener("click", () => setPlaying(!playing));
+  scrub.addEventListener("input", () => { if (!C) return; if (playing) setPlaying(false); vid.currentTime = (scrub.value / 1000) * (C.n - 1) / C.fps; draw(); });
+  document.querySelectorAll("[data-clip]").forEach((b) => b.addEventListener("click", () => setClip(b.dataset.clip)));
+  new IntersectionObserver((es) => { seen = es[0].isIntersecting; if (seen && playing) vid.play().catch(() => {}); else vid.pause(); }, { threshold: 0.25 }).observe(vid);
+  new ResizeObserver(() => draw()).observe(cv);
+  setPlaying(playing);
+  setClip("on");
+}
+})();
+</script>
+
+</body>
+</html>
