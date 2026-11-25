@@ -770,13 +770,13 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
       <div>
         <p class="doer robot">Autonomous · no operator</p>
         <h3>Blueberries: the policy trained with feedback grips lighter</h3>
-        <p>Two π0.5 policies, one per set of 70 demonstrations. The feedback-on policy also takes the hand's recent joint angles and motor currents as input; the feedback-off policy is plain π0.5. The feedback-on policy ran the arm and the hand on its own 20 times, the feedback-off policy 15 times, and their grip is measured exactly as the demonstrations' is.</p>
+        <p>Two π0.5 policies, one per set of 70 demonstrations. The feedback-on policy also takes the hand's recent joint angles and motor currents as input; the feedback-off policy is plain π0.5. Each policy ran the arm and the hand on its own 20 times, and their grip is measured exactly as the demonstrations' is.</p>
       </div>
     </div>
     <dl class="dstats">
-      <div><dt>Grip current, the two policies</dt><dd>94<small>vs</small>127<small>mA</small></dd><p>Trained on feedback-on vs feedback-off demonstrations, over the pinches that held a berry in finished runs. p &lt; 0.001. Their demonstrations: 103 and 150 mA.</p></div>
-      <div><dt>Target past the measured angle</dt><dd>0.9°<small>vs</small>1.2°</dd><p>How far each policy tells the hand to close beyond where the berry stops it. p = 0.002.</p></div>
-      <div><dt>Success rate</dt><dd>70%<small>vs</small>47%</dd><p>Runs with all three berries in the bowl: 14 of 20 for the feedback-on policy, 7 of 15 for the feedback-off policy.</p></div>
+      <div><dt>Grip current, the two policies</dt><dd>94<small>vs</small>128<small>mA</small></dd><p>Trained on feedback-on vs feedback-off demonstrations, over the pinches that held a berry in finished runs. p &lt; 0.001. Their demonstrations: 103 and 150 mA.</p></div>
+      <div><dt>Target past the measured angle</dt><dd>0.9°<small>vs</small>1.2°</dd><p>How far each policy tells the hand to close beyond where the berry stops it. p &lt; 0.001.</p></div>
+      <div><dt>Success rate</dt><dd>70%<small>vs</small>40%</dd><p>Runs with all three berries in the bowl: 14 of 20 for the feedback-on policy, 8 of 20 for the feedback-off policy.</p></div>
     </dl>
     <figure class="avg" id="polFig">
       <div class="legend" aria-hidden="true">
@@ -784,7 +784,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
         <span><i style="background:var(--off)"></i>feedback-off data</span>
         <span><i class="ci"></i>95% interval</span>
       </div>
-      <div class="avg-plot pol-curve" id="polCurve" role="img" aria-label="Mean hand current around a pinch that held a berry, two panels. Demonstrations: feedback off climbs to about 172 mA, feedback on to about 115 mA. Policies: trained on feedback-off demonstrations about 145 mA, trained on feedback-on demonstrations about 115 mA."></div>
+      <div class="avg-plot pol-curve" id="polCurve" role="img" aria-label="Mean hand current around a pinch that held a berry, two panels. Demonstrations: feedback off climbs to about 172 mA, feedback on to about 115 mA. Policies: trained on feedback-off demonstrations about 155 mA, trained on feedback-on demonstrations about 115 mA."></div>
       <div class="tip" id="polCurveTip" hidden></div>
       <div class="legend" aria-hidden="true" style="margin-top:22px">
         <span><i class="dot" style="opacity:.55"></i>one demonstration</span>
@@ -792,7 +792,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
         <span><i class="tick"></i>median</span>
         <span><i class="floor"></i>sensor noise, hand open</span>
       </div>
-      <div class="pol-plot" id="polPlot" role="img" aria-label="Grip current per demonstration and per finished run. Feedback-on demonstrations: median 103 mA. Feedback-off demonstrations: median 150 mA. Policy trained on feedback-on demonstrations, 14 finished runs: median 94 mA. Policy trained on feedback-off demonstrations, 7 finished runs: median 127 mA."><p class="loadmsg" id="polLoad">loading runs</p></div>
+      <div class="pol-plot" id="polPlot" role="img" aria-label="Grip current per demonstration and per finished run. Feedback-on demonstrations: median 103 mA. Feedback-off demonstrations: median 150 mA. Policy trained on feedback-on demonstrations, 14 finished runs: median 94 mA. Policy trained on feedback-off demonstrations, 8 finished runs: median 128 mA."><p class="loadmsg" id="polLoad">loading runs</p></div>
       <div class="tip" id="polTip" hidden></div>
       <figcaption class="proc">Top: mean hand current around the pinches that held a berry, aligned at the moment the middle finger closes; bands are 95% intervals. Bottom: one dot per demonstration or finished run.</figcaption>
       <details class="avg-table" hidden><summary>Show the runs</summary><div class="tablebox" id="polTable"></div></details>
