@@ -33,6 +33,7 @@
   --text:"Archivo","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --nav-h:52px; --r:20px;
+  --night:#0f1114; --night-ink:#f5f5f7; --night-2:#a3a9b6; --hand-hi:#2fd4a3;
 }
 
 *{box-sizing:border-box}
@@ -293,6 +294,77 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 .pol-curve{min-height:280px}
 .tip .r i.o{width:9px;height:9px;border-radius:50%}
 
+
+/* v29: dark results band, comparison tiles, control states / questions */
+.band.night{background:var(--night);color:var(--night-ink)}
+.night .eyebrow,.night .sub{color:var(--night-2)}
+.big3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3.2vw,48px)}
+.big{border-top:2px solid var(--night-ink);padding-top:16px;min-width:0;display:flex;flex-direction:column}
+.big .what{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--night-2)}
+.big .num{font-family:var(--display);font-stretch:116%;font-weight:700;font-size:clamp(56px,6.6vw,88px);line-height:1;letter-spacing:-.035em;margin-top:14px;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--hand-hi)}
+.big .num small,.kpi .num small{font-size:.5em;font-weight:600;letter-spacing:-.01em}
+.big .num .vs,.kpi .num .vs{font-size:.4em;font-weight:500;letter-spacing:-.01em;margin-left:.4em}
+.big .num .vs{color:var(--night-2)}
+.big .say{color:var(--night-ink);opacity:.88;font-size:15.5px;margin-top:14px}
+.big .more{margin-top:auto;padding-top:18px;font-size:14px;color:var(--night-2);text-decoration:none;width:max-content;max-width:100%}
+.big .more::after{content:" ↓"}
+.big .more:hover{color:var(--night-ink)}
+.cmp{display:grid;gap:8px;margin-top:16px}
+.cmp > div{display:grid;grid-template-columns:minmax(0,var(--nw,7.4em)) minmax(0,1fr) minmax(3.6em,auto);align-items:center;gap:10px;font-size:13.5px}
+.cmp .n{color:var(--ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cmp .track{height:14px;border-radius:4px;background:color-mix(in srgb,var(--ink) 7%,transparent);position:relative}
+.cmp .track i{position:absolute;inset:0 auto 0 0;width:var(--v,0%);min-width:2px;border-radius:4px;background:var(--hand)}
+.cmp .off .track i{background:var(--off)}
+.cmp .ref .track i{opacity:.45}
+.cmp b{font-family:var(--mono);font-weight:500;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.night .cmp .track{background:color-mix(in srgb,var(--night-ink) 14%,transparent)}
+.night .cmp .n,.night .cmp b{color:var(--night-ink)}
+.night .cmp .on .track i{background:var(--hand-hi)}
+.night .cmp .off .track i{background:var(--night-2)}
+.kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,24px);margin-bottom:clamp(24px,3.4vw,40px)}
+.kpis.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpis.one{grid-template-columns:minmax(0,1fr)}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,2.2vw,26px);min-width:0;display:flex;flex-direction:column}
+.kpi .what{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.kpi .num{font-family:var(--display);font-stretch:114%;font-weight:700;font-size:clamp(46px,5.4vw,72px);line-height:1;letter-spacing:-.03em;margin-top:10px;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--hand-ink)}
+.kpi .num .vs{color:var(--muted)}
+.kpi .say{font-size:14.5px;color:var(--ink-2);margin-top:14px}
+.kpi.wide{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.1fr);align-items:center;gap:clamp(18px,3vw,44px)}
+.kpi.wide .say,.kpi.wide .cmp{margin-top:0}
+.fig{margin:0}
+.fig .proc{margin-top:12px}
+.fig-title{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:clamp(18px,1.9vw,22px);letter-spacing:-.01em;margin:0 0 12px}
+.states{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2vw,24px)}
+.state{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:clamp(18px,2.2vw,26px);min-width:0}
+.state svg{display:block;width:96px;height:48px;color:var(--ink)}
+.state .k{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:14px}
+.state h3{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:24px;line-height:1.15;letter-spacing:-.01em;margin-top:4px}
+.state .when{color:var(--ink-2);font-size:15px;margin-top:8px;min-height:3.1em}
+.state dl{margin-top:14px;display:grid;gap:12px;border-top:1px solid var(--line);padding-top:14px}
+.state dt{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase}
+.state dt.g{color:var(--glove-ink)} .state dt.h{color:var(--hand-ink)}
+.state dd{font-size:15px;color:var(--ink-2);margin-top:2px}
+.faq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,36px) clamp(20px,3vw,44px)}
+.faq > div{border-top:2px solid var(--ink);padding-top:14px;min-width:0}
+.faq h3{font-family:var(--display);font-stretch:108%;font-weight:650;font-size:20px;line-height:1.2;letter-spacing:-.01em}
+.faq p{color:var(--ink-2);font-size:15.5px;margin-top:8px}
+#control .modes{margin-top:0}
+.deep{margin-top:clamp(28px,4vw,48px);border-block:1px solid var(--line)}
+.deep > summary{cursor:pointer;padding:16px 0;font-size:16px;font-weight:600;list-style:none;display:flex;align-items:center;gap:12px}
+.deep > summary::-webkit-details-marker{display:none}
+.deep > summary::before{content:"+";font-family:var(--mono);font-weight:400;flex:none;width:24px;height:24px;border:1px solid var(--ink-2);border-radius:50%;display:grid;place-items:center;line-height:1}
+.deep[open] > summary::before{content:"−"}
+.deep .steps{margin-top:8px;padding-bottom:clamp(20px,3vw,32px)}
+/* the 3D could not start: a still of the hero, a line of text in the other views */
+.nogl #heroStage .ratio{background:url("assets/hero.jpg") center/cover no-repeat}
+.nogl #heroStage canvas,.nogl #heroStage .loading,.nogl .stage .hint{display:none}
+.nogl .stage:not(#heroStage) .ratio::after{content:"This interactive 3D view could not start in this browser.";position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--stage-ink)}
+@media (max-width:900px){
+  .big3,.kpis,.kpis.two,.states,.faq,.kpi.wide{grid-template-columns:minmax(0,1fr)}
+  .state .when{min-height:0}
+  .nogl #heroStage .ratio{background-image:url("assets/hero_43.jpg")}
+}
+
 @media (max-width:900px){
   .dstats,.demo{grid-template-columns:minmax(0,1fr)}
   .demo-side .traces{height:280px}
@@ -323,9 +395,10 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
   <div class="wrap">
     <a class="brand" href="#top"><i></i>Motor Glove</a>
     <nav aria-label="Sections">
-      <a href="#skeleton">One skeleton</a>
+      <a href="#results">Results</a>
+      <a href="#skeleton">Hardware</a>
       <a href="#mechanism">Mechanism</a>
-      <a href="#control">Control</a>
+      <a href="#control">How it works</a>
       <a href="#replay">Replay</a>
       <a href="#demos">Teleoperation</a>
       <a href="#policy">Policies</a>
@@ -339,7 +412,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
     <div class="hero-top">
       <h1><span>Motor</span><span class="l2">Glove</span></h1>
       <div>
-        <p class="lede"><b>A 13-DoF glove and a direct-drive robot hand built on one skeleton.</b> The glove steers the hand joint for joint. What the hand's fingertips press against is pushed back onto yours.</p>
+        <p class="lede"><b>A 13-joint force-feedback glove and a robot hand with the same joints.</b> Move your fingers and the hand copies them, joint for joint. When its fingertips touch something, the glove's motors push back on yours.</p>
         <div class="links" aria-label="Resources">
           <span class="chip">Paper <small>soon</small></span>
           <span class="chip">Code &amp; firmware <small>soon</small></span>
@@ -363,22 +436,57 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
       <div class="loading" id="heroLoading">loading CAD · 2.5 MB</div>
     </div>
 
-    <dl class="stats">
-      <div><dt>Joints per device</dt><dd>13</dd></div>
-      <div><dt>Servos, all XL330</dt><dd>26</dd></div>
-      <div><dt>Control loop</dt><dd>540<small>Hz</small></dd></div>
-      <div><dt>Bus, both sides</dt><dd>3<small>Mbps</small></dd></div>
-      <div><dt>Glove mass, CAD</dt><dd>478<small>g</small></dd></div>
-    </dl>
   </div>
 </section>
 
-<section class="band" style="padding-top:0">
+<section class="band night" id="results">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Results</p>
+      <h2 class="title">What the feedback changes.</h2>
+      <p class="sub">An operator picked up potato chips and blueberries through the robot hand, with the glove's force feedback on and with it off. Then π0.5 policies were trained on each set of demonstrations.</p>
+    </div>
+    <ul class="big3">
+      <li class="big">
+        <p class="what">Chips broken while teleoperating</p>
+        <p class="num">0<span class="vs">vs 5</span></p>
+        <div class="cmp" role="img" aria-label="Chips broken: 0 with feedback on, 5 with feedback off">
+          <div class="on"><span class="n">Feedback on</span><span class="track"><i style="--v:0%"></i></span><b>0</b></div>
+          <div class="off"><span class="n">Feedback off</span><span class="track"><i style="--v:100%"></i></span><b>5</b></div>
+        </div>
+        <p class="say">No chip broke with feedback on. Five broke with it off. 140 chips were picked up each way.</p>
+        <a class="more" href="#chips">Potato chips</a>
+      </li>
+      <li class="big">
+        <p class="what">Grip current on a chip</p>
+        <p class="num">−46<small>%</small></p>
+        <div class="cmp" role="img" aria-label="Hand grip current: 150 milliamps with feedback on, 276 with feedback off">
+          <div class="on"><span class="n">Feedback on</span><span class="track"><i style="--v:54.3%"></i></span><b>150 mA</b></div>
+          <div class="off"><span class="n">Feedback off</span><span class="track"><i style="--v:100%"></i></span><b>276 mA</b></div>
+        </div>
+        <p class="say">What the hand's motors draw while holding a chip. Less current means a lighter grip.</p>
+        <a class="more" href="#chipFig">The current curves</a>
+      </li>
+      <li class="big">
+        <p class="what">Blueberries picked by a policy</p>
+        <p class="num">70<small>%</small><span class="vs">vs 40%</span></p>
+        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Policy success: 14 of 20 runs when trained on feedback-on demonstrations, 8 of 20 when trained on feedback-off demonstrations">
+          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:70%"></i></span><b>14 of 20</b></div>
+          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:40%"></i></span><b>8 of 20</b></div>
+        </div>
+        <p class="say">Two π0.5 policies, each run 20 times with no operator. One learned from the feedback-on demonstrations, the other from the feedback-off ones.</p>
+        <a class="more" href="#rollouts">Policy runs</a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="band">
   <div class="wrap">
     <ul class="claims">
-      <li><h3>Joint for joint, no retargeting</h3><p>The hand repeats the glove's 13 joint axes: all parallel in CAD, ten exactly coincident, the middle finger's within 4 mm. A glove angle is a hand angle, with nothing solved in between.</p></li>
-      <li><h3>Force at the fingertip</h3><p>Feedback is computed where contact happens and spread over the finger with the Jacobian. Per-joint springs cancel out in a pinch; this does not.</p></li>
-      <li><h3>Stiff to squeeze, free to twist</h3><p>Once two fingers hold an object, their pinch distance is held by the servos' own position loops. Rolling and twisting stay free.</p></li>
+      <li><h3>The same 13 joints on both</h3><p>The robot hand repeats the glove's joint axes: all parallel in CAD, ten exactly coincident, the middle finger's within 4 mm. A glove angle is sent to the hand as it is, with no retargeting.</p></li>
+      <li><h3>Force worked out at the fingertip</h3><p>When an object stops one of the hand's fingertips, a force is computed at that fingertip and shared over the joints of the same finger on the glove.</p></li>
+      <li><h3>A grasp you can feel and still twist</h3><p>Once two fingers hold an object, the glove holds the distance between them stiffly. Rolling and twisting the object stay free.</p></li>
     </ul>
   </div>
 </section>
@@ -386,7 +494,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 <section class="band mist" id="skeleton">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow">One skeleton</p>
+      <p class="eyebrow">Hardware</p>
       <h2 class="title">Thirteen joints, built twice.</h2>
       <p class="sub">Four fingers. The thumb has four joints, the index, middle and ring fingers three each. Pick a joint to see the same axis on both machines.</p>
     </div>
@@ -437,6 +545,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
           <tr><th>Servos</th><td>9 × XL330-M288, 4 × XL330-M077 at PIP / IP</td><td>13 × XL330-M288</td></tr>
           <tr><th>Transmission</th><td>Closed-chain linkages around the finger</td><td>Direct drive, one servo per joint</td></tr>
           <tr><th>Control mode</th><td>Voltage (PWM)</td><td>On-motor position loop, current-limited</td></tr>
+          <tr><th>Control loop</th><td colspan="2">One PC loop over both buses, about 540 Hz</td></tr>
           <tr><th>Bus</th><td>OpenRB-150 with our 3 Mbps DMA bridge firmware</td><td>U2D2, 3 Mbps</td></tr>
           <tr><th>Force sensing</th><td>Motor current</td><td>Motor current</td></tr>
           <tr><th>Mass, CAD</th><td>478 g</td><td>441 g</td></tr>
@@ -449,142 +558,213 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 <section class="band mist" id="control">
   <div class="wrap">
     <div class="head">
-      <p class="eyebrow">Control</p>
-      <h2 class="title">One loop, two servo modes.</h2>
-      <p class="sub">A PC closes the loop over both buses about 540 times a second. The glove's servos take voltage commands. The hand's servos run their own position loop. Each choice follows from a delay we measured.</p>
+      <p class="eyebrow">How it works</p>
+      <h2 class="title">Angles go out, force comes back.</h2>
+      <p class="sub">Two signals pass between the glove and the hand, about 540 times a second. Your joint angles go to the hand. An estimate of the force on its fingertips comes back, and the glove's motors push on your fingers with it.</p>
     </div>
 
-    <div class="diagram" role="img" aria-label="Control diagram. Glove angles pass through a joint map with early closing to become hand targets. Hand angles and currents feed contact detection, then fingertip force, then the voltage law that drives the glove. While a pinch is locked, a proxy wall sends position targets to seven glove joints.">
-      <svg viewBox="0 0 1120 470" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <marker id="aG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap g" d="M0 0L10 5L0 10z"/></marker>
-          <marker id="aH" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap h" d="M0 0L10 5L0 10z"/></marker>
-          <marker id="aK" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap k" d="M0 0L10 5L0 10z"/></marker>
-          <marker id="aW" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap w" d="M0 0L10 5L0 10z"/></marker>
-        </defs>
-        <rect class="d-pc" x="232" y="18" width="656" height="434" rx="22"/>
-        <text class="d-m" x="252" y="44">PC LOOP · ~540 HZ · 1.6 MS P99 PERIOD · REAL-TIME THREAD</text>
+    <figure class="fig">
+      <div class="diagram" role="img" aria-label="Signal flow. Command path: the glove's 13 joint angles are copied joint for joint, smoothed at 15 hertz, and sent to the robot hand as 13 target angles; each hand servo holds its target with its own position loop. Feedback path: the hand reports its angles and motor currents; the PC works out how far each fingertip is held back from its target, turns that depth into a fingertip force with a spring, splits the force into joint torques for the same finger of the glove, and sends them to the glove's motors as voltage.">
+        <svg viewBox="0 0 1160 400" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="aG" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap g" d="M0 0L10 5L0 10z"/></marker>
+            <marker id="aH" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="cap h" d="M0 0L10 5L0 10z"/></marker>
+          </defs>
+          <rect class="d-pc" x="256" y="24" width="648" height="352" rx="22"/>
+          <text class="d-m" x="276" y="364">PC · ABOUT 540 TIMES A SECOND</text>
 
-        <rect class="d-box" x="18" y="150" width="176" height="170" rx="16" style="stroke:var(--glove)"/>
-        <text class="d-t" x="36" y="184">Glove</text>
-        <text class="d-m" x="36" y="204">LEADER</text>
-        <text class="d-s" x="36" y="236">13 × XL330</text>
-        <text class="d-s" x="36" y="258">voltage (PWM) mode</text>
-        <text class="d-s" x="36" y="280">7 joints switch to</text>
-        <text class="d-s" x="36" y="300">position when locked</text>
+          <rect class="d-box" x="16" y="130" width="170" height="200" rx="16" style="stroke:var(--glove)"/>
+          <text class="d-t" x="34" y="164">Glove</text>
+          <text class="d-m" x="34" y="184">ON YOUR HAND</text>
+          <text class="d-s" x="34" y="218">13 servos</text>
+          <text class="d-s" x="34" y="240">read your joint</text>
+          <text class="d-s" x="34" y="260">angles, and push</text>
+          <text class="d-s" x="34" y="280">back on your fingers</text>
 
-        <rect class="d-box" x="926" y="150" width="176" height="170" rx="16" style="stroke:var(--hand)"/>
-        <text class="d-t" x="944" y="184">Hand</text>
-        <text class="d-m" x="944" y="204">FOLLOWER</text>
-        <text class="d-s" x="944" y="236">13 × XL330-M288</text>
-        <text class="d-s" x="944" y="258">on-motor position loop</text>
-        <text class="d-s" x="944" y="280">current-limited</text>
-        <text class="d-s" x="944" y="300">touches the object</text>
+          <rect class="d-box" x="974" y="130" width="170" height="200" rx="16" style="stroke:var(--hand)"/>
+          <text class="d-t" x="992" y="164">Robot hand</text>
+          <text class="d-m" x="992" y="184">TOUCHES THE OBJECT</text>
+          <text class="d-s" x="992" y="218">13 servos</text>
+          <text class="d-s" x="992" y="240">each holds its target</text>
+          <text class="d-s" x="992" y="260">with its own position</text>
+          <text class="d-s" x="992" y="280">loop, current-limited</text>
 
-        <rect class="d-box" x="400" y="64" width="320" height="86" rx="14"/>
-        <text class="d-t" x="418" y="96">Joint map + early closing</text>
-        <text class="d-s" x="418" y="118">1:1 angles; the hand closes 9–11.5 mm early</text>
-        <text class="d-s" x="418" y="137">to take up the give in the printed linkages</text>
+          <text class="d-m" x="430" y="54" style="fill:var(--glove-ink)">1 · COMMAND</text>
+          <rect class="d-box" x="430" y="66" width="300" height="84" rx="14"/>
+          <text class="d-t" x="448" y="98">Copy the angles, joint for joint</text>
+          <text class="d-s" x="448" y="120">same 13 axes on both, no retargeting</text>
+          <text class="d-m" x="448" y="139">SMOOTHED AT 15 HZ</text>
 
-        <rect class="d-box" x="690" y="210" width="182" height="104" rx="14"/>
-        <text class="d-t" x="706" y="240">Contact detection</text>
-        <text class="d-s" x="706" y="262">current residual vs a</text>
-        <text class="d-s" x="706" y="281">free-motion model</text>
-        <text class="d-m" x="706" y="302">25–29 mA · 30 ms</text>
+          <text class="d-m" x="276" y="228" style="fill:var(--hand-ink)">2 · FEEDBACK</text>
+          <rect class="d-box" x="708" y="240" width="176" height="104" rx="14"/>
+          <text class="d-t" x="724" y="270">Held back?</text>
+          <text class="d-s" x="724" y="292">fingertip target minus</text>
+          <text class="d-s" x="724" y="311">where the tip really is</text>
+          <text class="d-m" x="724" y="332">A DEPTH, IN MM</text>
 
-        <rect class="d-box" x="470" y="210" width="182" height="104" rx="14"/>
-        <text class="d-t" x="486" y="240">Fingertip force</text>
-        <text class="d-s" x="486" y="262">penetration at the tip,</text>
-        <text class="d-s" x="486" y="281">one-sided spring</text>
-        <text class="d-m" x="486" y="302">τ = J_gloveᵀ F</text>
+          <rect class="d-box" x="492" y="240" width="176" height="104" rx="14"/>
+          <text class="d-t" x="508" y="270">Fingertip force</text>
+          <text class="d-s" x="508" y="292">a spring on that depth,</text>
+          <text class="d-s" x="508" y="311">pushing outward only</text>
+          <text class="d-m" x="508" y="332">1 N/MM · MAX 8 N</text>
 
-        <rect class="d-box" x="250" y="210" width="182" height="104" rx="14"/>
-        <text class="d-t" x="266" y="240">Voltage law</text>
-        <text class="d-s" x="266" y="262">torque + friction and</text>
-        <text class="d-s" x="266" y="281">back-EMF feed-forward</text>
-        <text class="d-m" x="266" y="302">→ PWM duty</text>
+          <rect class="d-box" x="276" y="240" width="176" height="104" rx="14"/>
+          <text class="d-t" x="292" y="270">Joint torques</text>
+          <text class="d-s" x="292" y="292">split over the joints</text>
+          <text class="d-s" x="292" y="311">of that glove finger</text>
+          <text class="d-m" x="292" y="332">τ = Jᵀ F</text>
 
-        <rect class="d-box" x="360" y="356" width="400" height="74" rx="14" style="stroke:var(--loop)"/>
-        <text class="d-t" x="378" y="386">Pinch lock on a proxy wall</text>
-        <text class="d-s" x="378" y="408">glove pose with the pad distance restored → position targets</text>
+          <path class="flow g" marker-end="url(#aG)" d="M101 130 C101 92 300 108 424 108"/>
+          <text class="d-m" x="112" y="84">13 JOINT ANGLES</text>
+          <path class="flow g" marker-end="url(#aG)" d="M730 108 C860 108 1059 92 1059 124"/>
+          <text class="d-m" x="1048" y="84" text-anchor="end">13 TARGET ANGLES</text>
 
-        <path class="flow g" marker-end="url(#aG)" d="M150 150 C150 100 300 107 394 107"/>
-        <text class="d-m" x="60" y="132">q glove</text>
-        <path class="flow h" marker-end="url(#aH)" d="M720 107 C840 107 990 100 990 144"/>
-        <text class="d-m" x="1010" y="132">q target</text>
-        <path class="flow h" marker-end="url(#aH)" d="M926 262 L878 262"/>
-        <path class="flow k" marker-end="url(#aK)" d="M690 262 L658 262"/>
-        <path class="flow k" marker-end="url(#aK)" d="M470 262 L438 262"/>
-        <path class="flow g" marker-end="url(#aG)" d="M250 262 L200 262"/>
-        <path class="flow w" marker-end="url(#aW)" d="M561 314 L561 350"/>
-        <path class="flow w" marker-end="url(#aW)" d="M360 393 C200 393 106 380 106 326"/>
-        <text class="d-m" x="60" y="420">wall targets</text>
-        <path class="flow w" marker-end="url(#aW)" d="M760 393 C930 393 1014 380 1014 326"/>
-        <text class="d-m" x="970" y="420">grip targets</text>
-      </svg>
+          <path class="flow h" marker-end="url(#aH)" d="M974 292 L890 292"/>
+          <text class="d-m" x="939" y="262" text-anchor="middle">ANGLES +</text>
+          <text class="d-m" x="939" y="277" text-anchor="middle">CURRENTS</text>
+          <path class="flow h" marker-end="url(#aH)" d="M708 292 L674 292"/>
+          <path class="flow h" marker-end="url(#aH)" d="M492 292 L458 292"/>
+          <path class="flow h" marker-end="url(#aH)" d="M276 292 L192 292"/>
+          <text class="d-m" x="221" y="262" text-anchor="middle">MOTOR</text>
+          <text class="d-m" x="221" y="277" text-anchor="middle">VOLTAGE</text>
+        </svg>
+      </div>
+      <figcaption class="proc">Orange is the command, green is the feedback. Neither device has a force sensor: the hand's servos report their angle and current, and the PC works out the rest.</figcaption>
+    </figure>
+
+    <div class="demo-head">
+      <div>
+        <h3>What you feel depends on what the hand is doing</h3>
+        <p>Each finger is in one of three states and moves between them on its own.</p>
+      </div>
+    </div>
+    <div class="states">
+      <article class="state">
+        <svg viewBox="0 0 96 48" aria-hidden="true"><rect x="14" y="9" width="14" height="30" rx="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="68" y="9" width="14" height="30" rx="7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <p class="k">State 1</p>
+        <h3>Moving freely</h3>
+        <p class="when">Nothing is touched.</p>
+        <dl>
+          <div><dt class="h">Hand</dt><dd>Follows your joint angles.</dd></div>
+          <div><dt class="g">Glove</dt><dd>Its motors only cancel their own friction and back-EMF, so the glove feels light. Nothing comes back from the hand.</dd></div>
+        </dl>
+      </article>
+      <article class="state">
+        <svg viewBox="0 0 96 48" aria-hidden="true"><circle cx="48" cy="24" r="10" fill="var(--loop)" opacity=".28"/><circle cx="48" cy="24" r="10" fill="none" stroke="var(--loop)" stroke-width="2"/><rect x="14" y="9" width="14" height="30" rx="7" fill="none" stroke="currentColor" stroke-width="2"/><rect x="58" y="9" width="14" height="30" rx="7" fill="var(--hand)" stroke="currentColor" stroke-width="2"/></svg>
+        <p class="k">State 2</p>
+        <h3>Touching</h3>
+        <p class="when">An object stops one of the hand's fingertips. This is noticed in about 30 ms.</p>
+        <dl>
+          <div><dt class="h">Hand</dt><dd>Keeps pressing toward your angle, with its current limited.</dd></div>
+          <div><dt class="g">Glove</dt><dd>The motors of that finger push it back open. The further you press past the surface, the harder they push.</dd></div>
+        </dl>
+      </article>
+      <article class="state">
+        <svg viewBox="0 0 96 48" aria-hidden="true"><circle cx="48" cy="26" r="10" fill="var(--loop)" opacity=".28"/><circle cx="48" cy="26" r="10" fill="none" stroke="var(--loop)" stroke-width="2"/><rect x="24" y="11" width="14" height="30" rx="7" fill="var(--hand)" stroke="currentColor" stroke-width="2"/><rect x="58" y="11" width="14" height="30" rx="7" fill="var(--hand)" stroke="currentColor" stroke-width="2"/><path d="M31 4H65M31 1V7M65 1V7" fill="none" stroke="var(--loop)" stroke-width="2" stroke-linecap="round"/></svg>
+        <p class="k">State 3</p>
+        <h3>Holding</h3>
+        <p class="when">The thumb and one finger both press on the same object.</p>
+        <dl>
+          <div><dt class="g">Glove</dt><dd>The joints of those two fingers switch to the servo's own position loop and hold the distance between your fingertips. It feels like a hard surface, and you can still roll or twist the object.</dd></div>
+          <div><dt class="h">Hand</dt><dd>Pressing into that surface tightens the hand's grip. Opening your fingers releases it.</dd></div>
+        </dl>
+      </article>
     </div>
 
+    <div class="demo-head">
+      <div>
+        <h3>Questions we get asked</h3>
+      </div>
+    </div>
+    <div class="faq">
+      <div>
+        <h3>Where is the position controller?</h3>
+        <p>Inside the servos. Every servo in the hand runs its own position loop with a current limit, and the PC only moves the target. The glove's servos take a voltage command and have no position loop, except while holding: then the joints of the two fingers in the grasp use the servo's position loop, with P and D gains, to keep the surface in place. The PC never closes a position loop across the bus.</p>
+      </div>
+      <div>
+        <h3>Is anything low-pass filtered?</h3>
+        <p>Yes, in four places. The hand's target angles at 15 Hz, to remove encoder steps and hand tremor. The glove's joint velocity at 25 Hz, which the friction feed-forward needs. Inside the force calculation, the hand's measured position at 2 Hz while it is touching, so that the hand shaking against the object is not sent back as force. And the feedback torque on the four PIP and IP joints at 15 Hz.</p>
+      </div>
+      <div>
+        <h3>How is force sensed without a force sensor?</h3>
+        <p>It is estimated. When an object holds a fingertip back, the servo stops short of its target. The distance between where the fingertip was told to be and where it is becomes the depth of a spring, and the spring gives the force. Contact itself is detected from motor current: each joint has a model of what it draws when moving freely, and a joint that draws more than that and has stopped is touching something.</p>
+      </div>
+      <div>
+        <h3>Does the glove reproduce the real contact force?</h3>
+        <p>No. It is a clear cue that grows with the hand's force, not a one-to-one copy. While holding, the relation runs the other way: the glove holds a stiff surface, and how far you press into it sets how hard the hand grips.</p>
+      </div>
+    </div>
+
+    <div class="demo-head">
+      <div>
+        <h3>Two choices that made it stable</h3>
+        <p>Both follow from a delay we measured. A command sent over the bus acts about 7 ms later, and a full round trip takes about 14 ms.</p>
+      </div>
+    </div>
     <div class="modes">
       <article class="mode">
         <p class="who g-ink">Glove</p>
-        <h3>Voltage mode, <em>not current mode</em></h3>
+        <h3>Its motors are driven by voltage, <em>not by current</em></h3>
         <ol>
-          <li><span><b>Current mode removes the motor's own damping.</b> The servo's current loop cancels back-EMF. On the M077 that leaves 0.45 mN·m·s/rad.</span></li>
-          <li><span><b>A late spring is a negative damper.</b> Commands reach the rotor about 7 ms late. A virtual spring of 0.8 N·m/rad through that delay takes out 5.6 mN·m·s/rad. The joint rang at 6.6 Hz and jumped when released.</span></li>
-          <li><span><b>Voltage mode keeps back-EMF in the circuit, with no delay.</b> It gives 21 mN·m·s/rad on the M288 and 1.3–1.8 on the M077. We cancel it in software while the hand moves freely, so the glove stays light, and let it act once contact is detected.</span></li>
+          <li><span><b>In current mode the motor loses its own damping.</b> The servo's current loop cancels the back-EMF. On the small PIP and IP servos (M077) that leaves 0.45 mN·m·s/rad.</span></li>
+          <li><span><b>A spring that acts 7 ms late takes damping away.</b> A virtual spring of 0.8 N·m/rad through that delay removes 5.6 mN·m·s/rad, more than the motor has. The joint oscillated at 6.6 Hz and jumped when released.</span></li>
+          <li><span><b>In voltage mode the back-EMF damping stays, with no delay.</b> It is 21 mN·m·s/rad on the M288 and 1.3–1.8 on the M077. While the hand moves freely we cancel it in software, so the glove stays light. In contact we leave it in.</span></li>
         </ol>
         <div class="plot">
-          <h4>Damping available against damping a delayed spring removes</h4>
-          <p>mN·m·s/rad, measured on our servos. The dashed line is K·T for K = 0.8 N·m/rad, T = 7 ms.</p>
+          <h4>Damping the motor has, against the damping a late spring removes</h4>
+          <p>mN·m·s/rad, measured on our servos. The dashed line is the 5.6 that the spring removes.</p>
           <svg id="dampPlot" viewBox="0 0 520 168" role="img" aria-label="Bar chart. Current mode M077 0.45; voltage mode M077 1.3 to 1.8; voltage mode M288 21. Threshold 5.6."></svg>
-          <p>The M077 joints (PIP, IP) stay below the line even in voltage mode. They get a lower stiffness cap and a 15 Hz torque filter.</p>
+          <p>The M077 joints stay below the line even in voltage mode. They get a lower stiffness limit and the 15 Hz torque filter.</p>
         </div>
       </article>
       <article class="mode">
         <p class="who h-ink">Hand</p>
-        <h3>On-motor position loop, <em>not a torque loop on the PC</em></h3>
+        <h3>Each servo runs its own position loop, <em>not a torque loop on the PC</em></h3>
         <ol>
-          <li><span><b>A torque loop through the bus is too slow.</b> Closed on the PC it sees about 14 ms round trip and self-oscillates above 8 Hz.</span></li>
-          <li><span><b>The servo's own loop has no bus in it.</b> The XL330 runs current-limited position control internally. The PC only moves the target.</span></li>
-          <li><span><b>Force is still commanded, through the target.</b> Past contact the servo turns error into current, I = P·e / 256 mA per encoder tick. We add three times the glove's penetration to the target, so a harder squeeze is a harder grip.</span></li>
+          <li><span><b>A torque loop through the bus is too slow.</b> Closed on the PC it sees the 14 ms round trip and oscillates above 8 Hz.</span></li>
+          <li><span><b>The servo's built-in loop has no bus in it.</b> It is position control with a current limit. The PC only moves the target.</span></li>
+          <li><span><b>Grip force is still commanded, through the target.</b> Once an object stops the finger, the servo turns the remaining error into current. We move the target a further three times that error, so a firmer squeeze on the glove becomes a firmer grip.</span></li>
         </ol>
         <div class="plot">
-          <h4>Hand current against how far the operator squeezes into the wall</h4>
-          <p>mA, thumb plus opposing finger, medians per depth bin from a 568 s recording.</p>
+          <h4>Hand current against how far the operator squeezes into the surface</h4>
+          <p>mA, thumb plus the opposing finger, medians per depth from a 568 s recording.</p>
           <svg id="gripPlot" viewBox="0 0 520 168" role="img" aria-label="Bar chart. Squeeze 0 to 1 mm: 112 mA. 2 to 3 mm: 279 mA. 4.5 to 7 mm: 651 mA."></svg>
-          <p>Glove current rises with it: 27, 68, 147 mA on the M288 joints.</p>
+          <p>The glove's current rises with it: 27, 68, 147 mA on the M288 joints.</p>
         </div>
       </article>
     </div>
 
-    <div class="steps">
-      <article class="step">
-        <p class="n">Step 1 · detect</p>
-        <h3>Notice contact in tens of milliseconds</h3>
-        <p>Each hand joint has a model of the current it draws in free motion: Coulomb and viscous friction, inertia, gravity. Contact is suspected when the residual passes 25–29 mA, and confirmed when the joint has actually stopped with its target still ahead for 30 ms.</p>
-        <div class="kv"><span>threshold <b>150 → 25–29 mA</b></span><span>latency in simulation <b>291 → 24–43 ms</b></span></div>
-      </article>
-      <article class="step">
-        <p class="n">Step 2 · render</p>
-        <h3>Compute the force at the fingertip</h3>
-        <p>In a pinch, six or seven joints are each off by a degree or less. Springs on each joint add up to almost nothing at the pads. We take the hand's fingertip penetration, apply a one-sided spring there, and map it back through the glove's Jacobian.</p>
-        <div class="eq">p = J_hand (q_target − q_hand)<br>F = −k p<br>τ = J_gloveᵀ F</div>
-        <div class="kv"><span>k <b>1000 N/m</b>, up to <b>8 N</b> per finger</span><span>thumb–middle separating force <b>0.05 → 0.84 N</b></span></div>
-      </article>
-      <article class="step">
-        <p class="n">Step 3 · lock</p>
-        <h3>Hold the pinch on a wall that follows you</h3>
-        <p>A spring sent through a 14 ms loop cannot be made stiff. When thumb and finger both press on an object, their seven glove joints switch to the servos' position loop. Every cycle the wall is reset to the glove's current pose with only the pad distance restored, weighted by each motor's torque constant so the reaction is a pure force along the pinch line.</p>
-        <div class="eq">q_wall ← q − (w∘c) · c·(q − q_wall) / c·(w∘c)<br>c = ∂d/∂q, the pad distance's gradient · w = 1/K_t</div>
-        <div class="kv"><span>tangential error while locked <b>0.25°</b> (95th pct)</span><span>object rotation per pinch, feedback vs none: index <b>32° vs 22°</b>, middle <b>45° vs 41°</b>, ring <b>34° vs 25°</b></span></div>
-      </article>
-      <article class="step">
-        <p class="n">Step 4 · admit</p>
-        <h3>Lock only a real grasp</h3>
-        <p>Three checks came out of replaying 71 recorded locks. Both fingers must press toward each other. There must be something between the hand's fingertips, judged by the signed gap between their CAD hulls. And the lock releases when the object is gone, judged by a signed aperture so that a hard squeeze is never mistaken for it.</p>
-        <div class="kv"><span>zero offsets from self-contact: glove <b>0.5 mm</b>, hand <b>1.1 mm RMS</b></span></div>
-      </article>
-    </div>
+    <details class="deep">
+      <summary>More detail: detecting contact, computing the force, holding a grasp</summary>
+      <div class="steps">
+        <article class="step">
+          <p class="n">Detect</p>
+          <h3>Contact is noticed in tens of milliseconds</h3>
+          <p>Each hand joint has a model of the current it draws in free motion: Coulomb and viscous friction, inertia, gravity. Contact is suspected when the measured current exceeds the model by 25–29 mA. It is confirmed when the joint has actually stopped, with its target still ahead, for 30 ms.</p>
+          <div class="kv"><span>threshold <b>150 → 25–29 mA</b></span><span>latency in simulation <b>291 → 24–43 ms</b></span></div>
+        </article>
+        <article class="step">
+          <p class="n">Render</p>
+          <h3>The force is computed at the fingertip</h3>
+          <p>In a pinch, six or seven joints are each off by a degree or less. A spring on each joint adds up to almost nothing at the finger pads. So we take how far the hand's fingertip is held back, put a one-sided spring there, and map the force to the glove's joints through its Jacobian.</p>
+          <div class="eq">p = J_hand (q_target − q_hand)<br>F = −k p<br>τ = J_gloveᵀ F</div>
+          <div class="kv"><span>k <b>1000 N/m</b>, up to <b>8 N</b> per finger</span><span>thumb–middle separating force <b>0.05 → 0.84 N</b></span></div>
+        </article>
+        <article class="step">
+          <p class="n">Hold</p>
+          <h3>The held surface follows your hand sideways</h3>
+          <p>A spring sent through a 14 ms loop cannot be made stiff, so a grasp is held by the glove servos' position loop. Every cycle the held pose is reset to the glove's current pose with only the fingertip distance restored. The correction is weighted by each motor's torque constant, so what you feel is a force along the line between the two fingertips and nothing sideways.</p>
+          <div class="eq">q_wall ← q − (w∘c) · c·(q − q_wall) / c·(w∘c)<br>c = ∂d/∂q, the gradient of the fingertip distance · w = 1/K_t</div>
+          <div class="kv"><span>sideways error while holding <b>0.25°</b> (95th pct)</span><span>object rotation per pinch, feedback vs none: index <b>32° vs 22°</b>, middle <b>45° vs 41°</b>, ring <b>34° vs 25°</b></span></div>
+        </article>
+        <article class="step">
+          <p class="n">Admit</p>
+          <h3>Only a real grasp is held</h3>
+          <p>Three checks came out of replaying 71 recorded grasps. Both fingers must press toward each other. There must be something between the hand's fingertips, judged by the signed gap between their CAD shapes. And the hold ends when the object is gone, judged by a signed distance so that a hard squeeze is never mistaken for it.</p>
+          <div class="kv"><span>zero offsets from self-contact: glove <b>0.5 mm</b>, hand <b>1.1 mm RMS</b></span></div>
+        </article>
+      </div>
+    </details>
   </div>
 </section>
 
@@ -623,21 +803,46 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
     <div class="head">
       <p class="eyebrow">Teleoperation</p>
       <h2 class="title">With feedback, a lighter grip.</h2>
-      <p class="sub">A person wears the glove and drives the robot hand. We recorded two tasks, picking up potato chips and picking blueberries into a bowl, each with feedback on and with it off. Line every pinch up at the moment the fingers close, and the difference shows in the motor currents on both sides.</p>
+      <p class="sub">A person wears the glove and drives the robot hand through two tasks, potato chips and blueberries. Each task was recorded with the feedback on and with it off. With feedback the hand grips more lightly, and no chip breaks.</p>
     </div>
     <div class="demo-head task-first" id="chips">
       <div>
         <p class="doer human">Teleoperated · a person wears the glove</p>
         <h3>Task 1: potato chips, thumb and ring finger</h3>
-        <p>A chip is light, stiff and brittle, and it lies flat on the box. The hand pinches it between the thumb and the ring finger and carries it to a bowl. 140 demonstrations, 70 with feedback on and 70 with it off, two chips each. While they were recorded, no chip broke with feedback on; five broke with it off.</p>
+        <p>A chip is light, stiff and brittle, and it lies flat on the box. The hand pinches it between the thumb and the ring finger and carries it to a bowl. 140 demonstrations, 70 with feedback on and 70 with it off, two chips each.</p>
       </div>
     </div>
-    <dl class="dstats">
-      <div><dt>Push-back felt at the glove</dt><dd>+59<small>mA</small></dd><p>Glove current 2 s into a pinch, above its level just before. With feedback off: −2 mA.</p></div>
-      <div><dt>Hand grip current</dt><dd>−46<small>%</small></dd><p>150 mA with feedback, 276 mA without. Median per demonstration, p &lt; 0.001.</p></div>
-      <div><dt>Target past the measured angle</dt><dd>1.7°<small>vs</small>3.7°</dd><p>How far the hand is told to close beyond where the chip stops it, with and without feedback. p &lt; 0.001.</p></div>
-    </dl>
+    <div class="kpis">
+      <div class="kpi">
+        <p class="what">Chips broken</p>
+        <p class="num">0<span class="vs">vs 5</span></p>
+        <div class="cmp" role="img" aria-label="Chips broken: 0 with feedback on, 5 with feedback off">
+          <div class="on"><span class="n">Feedback on</span><span class="track"><i style="--v:0%"></i></span><b>0</b></div>
+          <div class="off"><span class="n">Feedback off</span><span class="track"><i style="--v:100%"></i></span><b>5</b></div>
+        </div>
+        <p class="say">Out of the 140 chips picked up in each condition.</p>
+      </div>
+      <div class="kpi">
+        <p class="what">Grip current</p>
+        <p class="num">−46<small>%</small></p>
+        <div class="cmp" role="img" aria-label="Hand grip current: 150 milliamps with feedback on, 276 with feedback off">
+          <div class="on"><span class="n">Feedback on</span><span class="track"><i style="--v:54.3%"></i></span><b>150 mA</b></div>
+          <div class="off"><span class="n">Feedback off</span><span class="track"><i style="--v:100%"></i></span><b>276 mA</b></div>
+        </div>
+        <p class="say">What the hand's thumb and ring-finger motors draw while holding a chip. Median over the demonstrations, p &lt; 0.001.</p>
+      </div>
+      <div class="kpi">
+        <p class="what">Peak current in a pinch</p>
+        <p class="num">−37<small>%</small></p>
+        <div class="cmp" role="img" aria-label="Peak hand current in a pinch: 255 milliamps with feedback on, 407 with feedback off">
+          <div class="on"><span class="n">Feedback on</span><span class="track"><i style="--v:62.7%"></i></span><b>255 mA</b></div>
+          <div class="off"><span class="n">Feedback off</span><span class="track"><i style="--v:100%"></i></span><b>407 mA</b></div>
+        </div>
+        <p class="say">The highest current reached in each pinch that carried a chip away. Median over those pinches.</p>
+      </div>
+    </div>
     <figure class="avg" id="chipFig">
+      <h4 class="fig-title">Motor current through a chip pinch</h4>
       <div class="legend" aria-hidden="true">
         <span><i style="background:var(--glove)"></i>glove, feedback on</span>
         <span><i style="background:var(--hand)"></i>hand, feedback on</span>
@@ -646,7 +851,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
       </div>
       <div class="avg-plot" id="chipAvg" role="img" aria-label="Mean motor current around a chip pinch, two lanes. Glove: with feedback on it rises from about 55 to 115 mA by 2 s; with feedback off it stays near 50 mA. Hand: with feedback on it rises to about 165 mA; with feedback off to about 315 mA."><p class="loadmsg" id="chipLoad">loading</p></div>
       <div class="tip" id="chipAvgTip" hidden></div>
-      <figcaption class="proc">Mean over the pinches of each group, aligned at the moment the ring finger closes, summed over the thumb and ring-finger motors. Bands are 95% intervals.</figcaption>
+      <figcaption class="proc">Every pinch of a group is lined up at the moment the ring finger closes, then averaged. Top: the hand's thumb and ring-finger motors. Bottom: the same motors on the glove, which are what push on the operator's fingers. Shaded bands are 95% intervals.</figcaption>
       <details class="avg-table"><summary>Show the numbers</summary><div class="tablebox" id="chipTable"></div></details>
     </figure>
     <div class="demo-head">
@@ -698,13 +903,22 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
         <p>A blueberry is small and soft. Here the pinch is between the thumb and the middle finger, so the feedback has to reach a different finger. 140 demonstrations, 70 with feedback on and 70 with it off, three berries each.</p>
       </div>
     </div>
-    <dl class="dstats">
-      <div><dt>Push-back felt at the glove</dt><dd>+30<small>mA</small></dd><p>Glove current 2 s into a pinch, above its level just before. With feedback off: +1.5 mA.</p></div>
-      <div><dt>Hand grip current</dt><dd>−32<small>%</small></dd><p>103 mA with feedback, 150 mA without. Median over the 70 demonstrations in each group, p &lt; 0.001.</p></div>
-      <div><dt>Target past the measured angle</dt><dd>1.0°<small>vs</small>1.7°</dd><p>How far the hand is told to close beyond where the berry stops it, with and without feedback. This gap sets the grip. p &lt; 0.001.</p></div>
-    </dl>
+    <div class="kpis one">
+      <div class="kpi wide">
+        <div>
+          <p class="what">Grip current</p>
+          <p class="num">−32<small>%</small></p>
+        </div>
+        <div class="cmp" role="img" aria-label="Hand grip current: 103 milliamps with feedback on, 150 with feedback off">
+          <div class="on"><span class="n">Feedback on</span><span class="track"><i style="--v:68.7%"></i></span><b>103 mA</b></div>
+          <div class="off"><span class="n">Feedback off</span><span class="track"><i style="--v:100%"></i></span><b>150 mA</b></div>
+        </div>
+        <p class="say">What the hand's thumb and middle-finger motors draw while holding a berry. Median over the 70 demonstrations of each group, p &lt; 0.001.</p>
+      </div>
+    </div>
 
     <figure class="avg" id="avgFig">
+      <h4 class="fig-title">Motor current through a blueberry pinch</h4>
       <div class="legend" aria-hidden="true">
         <span><i style="background:var(--glove)"></i>glove, feedback on</span>
         <span><i style="background:var(--hand)"></i>hand, feedback on</span>
@@ -713,7 +927,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
       </div>
       <div class="avg-plot" id="avgPlot" role="img" aria-label="Mean motor current around a pinch, two lanes. Glove: with feedback on it rises from about 57 to 87 mA by 2 s; with feedback off it stays flat near 55 mA. Hand: with feedback on it levels near 112 mA; with feedback off it climbs to about 170 mA."><p class="loadmsg" id="avgLoad">loading 425 pinches</p></div>
       <div class="tip" id="avgTip" hidden></div>
-      <figcaption class="proc">Mean of 213 pinches with feedback on and 212 with it off, aligned at the moment the middle finger closes. Motor currents are rectified, low-passed at 4.5 Hz and summed over the thumb and middle-finger motors. Bands are 95% intervals.</figcaption>
+      <figcaption class="proc">213 pinches with feedback on and 212 with it off, lined up at the moment the middle finger closes, then averaged. Currents are rectified, low-passed at 4.5 Hz and summed over the thumb and middle-finger motors. Shaded bands are 95% intervals.</figcaption>
       <details class="avg-table"><summary>Show the numbers</summary><div class="tablebox" id="avgTable"></div></details>
     </figure>
 
@@ -757,14 +971,29 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
       <div>
         <p class="doer robot">Autonomous · no operator</p>
         <h3>Potato chips: the policy keeps the demonstrations' grip</h3>
-        <p>π0.5 trained on the 70 feedback-on potato-chip demonstrations, with the three cameras and the hand's recent joint angles and motor currents as inputs, runs the arm and the hand on its own. One of its runs is in the videos below.</p>
+        <p>Two π0.5 policies, one per set of 70 demonstrations. The one trained with feedback also takes the hand's recent joint angles and motor currents as input; the other is plain π0.5. The first has run 20 times. The second has run 3 times so far, so its numbers are early.</p>
       </div>
     </div>
-    <dl class="dstats">
-      <div><dt>Grip current, policy</dt><dd>154<small>mA</small></dd><p>Over the pinches that held a chip in finished runs. Its demonstrations: 150 mA.</p></div>
-      <div><dt>Target past the measured angle</dt><dd>1.8°</dd><p>How far the policy tells the hand to close beyond where the chip stops it. Its demonstrations: 1.7°.</p></div>
-      <div><dt>Success rate</dt><dd>75<small>%</small></dd><p>Runs with both chips in the bowl: 15 of 20.</p></div>
-    </dl>
+    <div class="kpis two">
+      <div class="kpi">
+        <p class="what">Runs with both chips in the bowl</p>
+        <p class="num">15<small> of 20</small></p>
+        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Both chips in the bowl: 15 of 20 runs for the policy trained with feedback; 2 of the first 3 runs for the policy trained without">
+          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:75%"></i></span><b>15 of 20</b></div>
+          <div class="off ref"><span class="n">Trained without</span><span class="track"><i style="--v:66.7%"></i></span><b>2 of 3</b></div>
+        </div>
+        <p class="say">The policy trained without feedback has run only 3 times, too few to compare success yet.</p>
+      </div>
+      <div class="kpi">
+        <p class="what">Grip current</p>
+        <p class="num">154<small> mA</small><span class="vs">vs 206</span></p>
+        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Grip current in finished runs: 154 milliamps for the policy trained with feedback, 206 for the policy trained without, from its first 2 finished runs">
+          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:74.8%"></i></span><b>154 mA</b></div>
+          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:100%"></i></span><b>206 mA</b></div>
+        </div>
+        <p class="say">Median over finished runs: 15 for the first policy, the first 2 for the second. Their demonstrations: 150 and 276 mA.</p>
+      </div>
+    </div>
 
     <div class="demo-head" id="rollouts">
       <div>
@@ -773,12 +1002,28 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
         <p>Two π0.5 policies, one per set of 70 demonstrations. The feedback-on policy also takes the hand's recent joint angles and motor currents as input; the feedback-off policy is plain π0.5. Each policy ran the arm and the hand on its own 20 times, and their grip is measured exactly as the demonstrations' is.</p>
       </div>
     </div>
-    <dl class="dstats">
-      <div><dt>Grip current, the two policies</dt><dd>94<small>vs</small>128<small>mA</small></dd><p>Trained on feedback-on vs feedback-off demonstrations, over the pinches that held a berry in finished runs. p &lt; 0.001. Their demonstrations: 103 and 150 mA.</p></div>
-      <div><dt>Target past the measured angle</dt><dd>0.9°<small>vs</small>1.2°</dd><p>How far each policy tells the hand to close beyond where the berry stops it. p &lt; 0.001.</p></div>
-      <div><dt>Success rate</dt><dd>70%<small>vs</small>40%</dd><p>Runs with all three berries in the bowl: 14 of 20 for the feedback-on policy, 8 of 20 for the feedback-off policy.</p></div>
-    </dl>
+    <div class="kpis two">
+      <div class="kpi">
+        <p class="what">Success</p>
+        <p class="num">70<small>%</small><span class="vs">vs 40%</span></p>
+        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Policy success: 14 of 20 runs when trained on feedback-on demonstrations, 8 of 20 when trained on feedback-off demonstrations">
+          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:70%"></i></span><b>14 of 20</b></div>
+          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:40%"></i></span><b>8 of 20</b></div>
+        </div>
+        <p class="say">Runs with all three berries in the bowl, out of 20 for each policy.</p>
+      </div>
+      <div class="kpi">
+        <p class="what">Grip current</p>
+        <p class="num">−26<small>%</small></p>
+        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Policy grip current: 94 milliamps when trained on feedback-on demonstrations, 128 when trained on feedback-off demonstrations">
+          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:73.6%"></i></span><b>94 mA</b></div>
+          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:100%"></i></span><b>128 mA</b></div>
+        </div>
+        <p class="say">Over the pinches that held a berry in finished runs, p &lt; 0.001. The demonstrations they learned from: 103 and 150 mA.</p>
+      </div>
+    </div>
     <figure class="avg" id="polFig">
+      <h4 class="fig-title">Hand current through a pinch: the demonstrations, then the policies</h4>
       <div class="legend" aria-hidden="true">
         <span><i style="background:var(--hand)"></i>feedback-on data</span>
         <span><i style="background:var(--off)"></i>feedback-off data</span>
@@ -868,6 +1113,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
 "use strict";
 const $ = (s, el = document) => el.querySelector(s);
 const DEG = Math.PI / 180;
+const TZ = (s) => (window.MGZH ? window.MGZH.t(s) : s);    // text drawn on a canvas; the review copy swaps in Chinese, the public page has no MGZH
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
@@ -898,7 +1144,7 @@ bars($("#dampPlot"), [
   { label: "Voltage mode, M288", v: 21, text: "21", color: "var(--glove)" },
 ], 24, { ticks: [0, 6, 12, 18, 24], line: 5.6, lineLabel: "K·T = 5.6" });
 bars($("#gripPlot"), [
-  { label: "0–1 mm into the wall", v: 112, text: "112 mA", color: "var(--hand)" },
+  { label: "pressed in 0–1 mm", v: 112, text: "112 mA", color: "var(--hand)" },
   { label: "2–3 mm", v: 279, text: "279 mA", color: "var(--hand)" },
   { label: "4.5–7 mm", v: 651, text: "651 mA", color: "var(--hand)" },
 ], 800, { ticks: [0, 200, 400, 600, 800] });
@@ -975,7 +1221,7 @@ let REP = null;
 function markDirty() { for (const k in V) V[k].dirty = true; }
 
 /* ---------- 3D ---------- */
-function fail(msg) { $("#heroLoading").textContent = msg; document.documentElement.dataset.err = msg; }
+function fail(msg) { $("#heroLoading").textContent = msg; document.documentElement.dataset.err = msg; document.documentElement.classList.add("nogl"); }
 if (!window.THREE) { fail("3D library did not load"); return; }
 
 async function loadBin(url) {
@@ -1235,7 +1481,7 @@ function makeEnv(renderer) {                          // a small light studio: b
       const y0 = h * lanes[k][1], y1 = h * lanes[k][0];
       c.strokeStyle = line; c.lineWidth = 1; c.beginPath(); c.moveTo(padL, y0); c.lineTo(w - padR, y0); c.moveTo(padL, y1); c.lineTo(w - padR, y1); c.stroke();
       c.fillStyle = muted; c.textAlign = "right"; c.fillText("0", padL - 8 * dpr, y0); c.fillText(max + " mA", padL - 8 * dpr, y1);
-      c.fillStyle = ink; c.textAlign = "left"; c.fillText(label, padL + 6 * dpr, y1 + 10 * dpr);
+      c.fillStyle = ink; c.textAlign = "left"; c.fillText(TZ(label), padL + 6 * dpr, y1 + 10 * dpr);
       c.strokeStyle = color; c.lineWidth = 2 * dpr; c.lineJoin = "round"; c.beginPath();
       for (let i = 0; i < n; i++) { const y = y0 + (y1 - y0) * Math.min(1, arr[i] / max); i ? c.lineTo(x(i), y) : c.moveTo(x(i), y); } c.stroke();
     };
@@ -1279,11 +1525,16 @@ const $ = (s) => document.querySelector(s);
 const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const nice = (v, step) => Math.ceil(v / step) * step;
+const TZ = (s) => (window.MGZH ? window.MGZH.t(s) : s);
 const sgn = (v, d = 0) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(d);
 const GROUPS = [{ g: "A", name: "feedback on", dash: "" }, { g: "B", name: "feedback off", dash: "6 5" }];
 const LANES = [
   { key: "glove", word: "Glove", title: "Glove · what the operator feels", col: "--glove", step: 25 },
   { key: "hand", word: "Hand", title: "Hand · how hard it grips", col: "--hand", step: 50 },
+];
+const AVG_LANES = [          // the averaged plots: the result first and taller (how hard the hand grips), then what the operator feels
+  { key: "hand", word: "Hand", title: "Robot hand · how hard it grips", short: "Robot hand · grip", col: "--hand", step: 50, h: 1.3 },
+  { key: "glove", word: "Glove", title: "Glove · how hard it pushes back on the operator's fingers", short: "Glove · push-back", col: "--glove", step: 25, h: 0.8 },
 ];
 const colOf = (ln, G) => (G.g === "A" ? `var(${ln.col})` : "var(--off)");
 let D = null;
@@ -1424,36 +1675,45 @@ function makeAvg(o) {
     if (!W || W === lastW) return;
     lastW = W;
     const narrow = W < 560;
-    const L = 40, R = narrow ? 10 : 112, top = 30, laneH = narrow ? 140 : 160, gap = 50, H = top + 2 * laneH + gap + 40;
+    const L = 40, R = 10, top = 34, base = narrow ? 128 : 150, gap = 56;
     const x = (v) => L + (W - L - R) * (v - t[0]) / (t[n - 1] - t[0]);
-    const lanes = LANES.map((ln, i) => {
+    let yy = top;
+    const lanes = AVG_LANES.map((ln) => {
       const max = nice(Math.max(...groups.map((G) => Math.max(...o.G[G.g][ln.key].hi))), ln.step);
-      const y0 = top + i * (laneH + gap);
-      return { ...ln, max, y0, y: (v) => y0 + laneH * (1 - v / max) };
+      const y0 = yy, h = Math.round(base * ln.h);
+      yy += h + gap;
+      return { ...ln, max, y0, h, y: (v) => y0 + h * (1 - v / max) };
     });
+    const lastLane = lanes[lanes.length - 1], H = lastLane.y0 + lastLane.h + 44;
     const P = (arr, ln) => t.map((tv, k) => `${x(tv).toFixed(1)},${ln.y(arr[k]).toFixed(1)}`);
     let s = "";
     lanes.forEach((ln) => {
-      s += `<text class="lab" x="${L}" y="${ln.y0 - 12}" style="font-weight:600">${ln.title}</text>`;
-      s += `<text class="ax" x="${L - 8}" y="${ln.y0 - 12}" text-anchor="end">mA</text>`;
+      s += `<text class="lab" x="${L}" y="${ln.y0 - 14}" style="font-weight:650;font-size:14.5px">${narrow ? ln.short : ln.title}</text>`;
+      s += `<text class="ax" x="${L - 8}" y="${ln.y0 - 14}" text-anchor="end">mA</text>`;
       for (let v = 0; v <= ln.max; v += ln.step) {
         s += `<line x1="${L}" x2="${W - R}" y1="${ln.y(v)}" y2="${ln.y(v)}" stroke="var(--line)" stroke-width="1"/>`;
         s += `<text class="ax" x="${L - 8}" y="${ln.y(v) + 4}" text-anchor="end">${v}</text>`;
       }
-      s += `<line x1="${x(0)}" x2="${x(0)}" y1="${ln.y0}" y2="${ln.y0 + laneH}" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="3 4"/>`;
+      s += `<line x1="${x(0)}" x2="${x(0)}" y1="${ln.y0}" y2="${ln.y0 + ln.h}" stroke="var(--ink-2)" stroke-width="1" stroke-dasharray="3 4"/>`;
       [...groups].reverse().forEach((G) => {                         // feedback off first, so feedback on draws on top
         const d = o.G[G.g][ln.key], c = colOf(ln, G);
         s += `<path d="M${P(d.hi, ln).join("L")}L${P(d.lo, ln).reverse().join("L")}Z" fill="${c}" opacity="${G.g === "A" ? 0.2 : 0.14}"/>`;
-        s += `<path d="M${P(d.mean, ln).join("L")}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"${G.dash ? ` stroke-dasharray="${G.dash}"` : ""}/>`;
+        s += `<path d="M${P(d.mean, ln).join("L")}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"${G.dash ? ` stroke-dasharray="${G.dash}"` : ""}/>`;
       });
-      if (!narrow) {                                                   // direct labels at the line ends, pushed apart if they would touch
-        const ys = groups.map((G) => ln.y(o.G[G.g][ln.key].mean[n - 1]));
-        if (ys.length > 1 && Math.abs(ys[0] - ys[1]) < 16) { const m = (ys[0] + ys[1]) / 2, k = ys[0] <= ys[1] ? -8 : 8; ys[0] = m + k; ys[1] = m - k; }
-        groups.forEach((G, k) => { s += `<text class="lab" x="${W - R + 8}" y="${ys[k] + 4}">${G.name}</text>`; });
+      {                                                                // direct labels where the two groups are furthest apart, with the values at that moment
+        const A = o.G[groups[0].g][ln.key], B = groups[1] ? o.G[groups[1].g][ln.key] : null;
+        let ks = 0, best = -1;
+        t.forEach((tv, k) => { const dl = B ? Math.abs(A.mean[k] - B.mean[k]) : A.mean[k]; if (tv >= 0 && dl > best) { best = dl; ks = k; } });
+        const xs = Math.max(L + 100, Math.min(W - R - 100, x(t[ks]))), up = !B || A.mean[ks] >= B.mean[ks] ? 0 : 1;
+        groups.forEach((G, k) => {
+          const dd = o.G[G.g][ln.key], yl = k === up ? ln.y(dd.hi[ks]) - 9 : ln.y(dd.lo[ks]) + 18;
+          s += `<circle cx="${x(t[ks]).toFixed(1)}" cy="${ln.y(dd.mean[ks]).toFixed(1)}" r="4" fill="${colOf(ln, G)}" stroke="var(--card)" stroke-width="2"/>`;
+          s += `<text class="lab" x="${xs.toFixed(1)}" y="${yl.toFixed(1)}" text-anchor="middle">${G.name} <tspan style="font-weight:650">${Math.round(dd.mean[ks])} mA</tspan></text>`;
+        });
       }
     });
     s += `<text class="ax" x="${x(0) + 6}" y="${lanes[0].y0 + 12}">fingers close</text>`;
-    const yx = lanes[1].y0 + laneH;
+    const yx = lastLane.y0 + lastLane.h;
     for (let v = -1; v <= 3; v++) s += `<text class="ax" x="${x(v)}" y="${yx + 18}" text-anchor="middle">${sgn(v)}</text>`;
     s += `<text class="ax" x="${(L + W - R) / 2}" y="${yx + 36}" text-anchor="middle">seconds from the start of the pinch</text>`;
     s += `<line class="aX" y1="${lanes[0].y0}" y2="${yx}" stroke="var(--ink)" stroke-width="1" visibility="hidden"/>`;
@@ -1762,7 +2022,6 @@ function strip() {
       ? `<div class="r"><span>${runName(q)}</span><b>${q.outcome === "success" ? `finished, ${q.in_bowl} in bowl` : "not finished"}</b></div>` +
         `<div class="r"><span>Grip, 3 strongest pinches</span><b>${Math.round(q.grip_top3)} mA</b></div>` +
         `<div class="r"><span>Every pinch carried away</span><b>${Math.round(q.grip)} mA</b></div>` +
-        `<div class="r"><span>Past measured angle</span><b>${q.over_top3.toFixed(2)}°</b></div>` +
         `<div class="r"><span>Closures, carried away</span><b>${q.closures}, ${q.carried}</b></div>` +
         `<div class="r"><span>Run length</span><b>${Math.round(q.dur)} s</b></div>`
       : `<div class="r"><span>Demonstration ${p.ep.slice(3)}</span><b>${Math.round(p.v)} mA</b></div>`);
@@ -1821,7 +2080,7 @@ function player() {
       ctx.strokeStyle = css("--line"); ctx.lineWidth = 1; ctx.fillStyle = css("--muted"); ctx.textAlign = "right"; ctx.font = `11px ${mono}`;
       for (let v = 0; v <= ln.max; v += ln.step) { ctx.beginPath(); ctx.moveTo(L, Math.round(y(v)) + 0.5); ctx.lineTo(w - R, Math.round(y(v)) + 0.5); ctx.stroke(); ctx.fillText(v, L - 6, y(v) + 4); }
       ctx.textAlign = "left"; ctx.fillStyle = css("--ink"); ctx.font = `600 12.5px ${text}`;
-      ctx.fillText(ln.name + " · mA" + (i === 0 && isA ? "   shaded: rendering contact" : ""), L, y0 - 9);
+      ctx.fillText(TZ(ln.name) + " · mA" + (i === 0 && isA ? "   " + TZ("shaded: rendering contact") : ""), L, y0 - 9);
       ctx.strokeStyle = css("--ink-2"); ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(Math.round(x(0)) + 0.5, y0); ctx.lineTo(Math.round(x(0)) + 0.5, y0 + lh); ctx.stroke();
       ctx.strokeStyle = isA ? ln.col : css("--off"); ctx.lineWidth = 2; ctx.lineJoin = "round"; ctx.setLineDash(isA ? [] : [6, 5]);
       ctx.beginPath(); ln.v.forEach((v, j) => (j ? ctx.lineTo(x(t[j]), y(v)) : ctx.moveTo(x(t[j]), y(v)))); ctx.stroke(); ctx.setLineDash([]);
