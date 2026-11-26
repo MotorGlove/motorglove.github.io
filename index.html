@@ -468,14 +468,14 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
         <a class="more" href="#chipFig">The current curves</a>
       </li>
       <li class="big">
-        <p class="what">Blueberries picked by a policy</p>
-        <p class="num">70<small>%</small><span class="vs">vs 40%</span></p>
-        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Policy success: 14 of 20 runs when trained on feedback-on demonstrations, 8 of 20 when trained on feedback-off demonstrations">
-          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:70%"></i></span><b>14 of 20</b></div>
-          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:40%"></i></span><b>8 of 20</b></div>
+        <p class="what">Chips picked by a policy</p>
+        <p class="num">75<small>%</small><span class="vs">vs 35%</span></p>
+        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Policy success on chips: 15 of 20 runs when trained on feedback-on demonstrations, 7 of 20 when trained on feedback-off demonstrations">
+          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:75%"></i></span><b>15 of 20</b></div>
+          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:35%"></i></span><b>7 of 20</b></div>
         </div>
-        <p class="say">Two π0.5 policies, each run 20 times with no operator. One learned from the feedback-on demonstrations, the other from the feedback-off ones.</p>
-        <a class="more" href="#rollouts">Policy runs</a>
+        <p class="say">Two π0.5 policies, each run 20 times with no operator. One learned from the feedback-on demonstrations and also sees the hand's motor currents; the other is plain π0.5. On blueberries: 70% vs 40%.</p>
+        <a class="more" href="#chipPolicy">Policy runs</a>
       </li>
     </ul>
   </div>
@@ -970,28 +970,28 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-betw
     <div class="demo-head" id="chipPolicy">
       <div>
         <p class="doer robot">Autonomous · no operator</p>
-        <h3>Potato chips: the policy keeps the demonstrations' grip</h3>
-        <p>Two π0.5 policies, one per set of 70 demonstrations. The one trained with feedback also takes the hand's recent joint angles and motor currents as input; the other is plain π0.5. The first has run 20 times. The second has run 3 times so far, so its numbers are early.</p>
+        <h3>Potato chips: the policy trained with feedback finishes more often and grips lighter</h3>
+        <p>Two π0.5 policies, one per set of 70 demonstrations. The feedback-on policy also takes the hand's recent joint angles and motor currents as input; the feedback-off policy is plain π0.5. Each ran the arm and the hand on its own 20 times.</p>
       </div>
     </div>
     <div class="kpis two">
       <div class="kpi">
-        <p class="what">Runs with both chips in the bowl</p>
-        <p class="num">15<small> of 20</small></p>
-        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Both chips in the bowl: 15 of 20 runs for the policy trained with feedback; 2 of the first 3 runs for the policy trained without">
+        <p class="what">Success</p>
+        <p class="num">75<small>%</small><span class="vs">vs 35%</span></p>
+        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Policy success on chips: 15 of 20 runs when trained on feedback-on demonstrations, 7 of 20 when trained on feedback-off demonstrations">
           <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:75%"></i></span><b>15 of 20</b></div>
-          <div class="off ref"><span class="n">Trained without</span><span class="track"><i style="--v:66.7%"></i></span><b>2 of 3</b></div>
+          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:35%"></i></span><b>7 of 20</b></div>
         </div>
-        <p class="say">The policy trained without feedback has run only 3 times, too few to compare success yet.</p>
+        <p class="say">Runs with both chips in the bowl, out of 20 for each policy.</p>
       </div>
       <div class="kpi">
         <p class="what">Grip current</p>
-        <p class="num">154<small> mA</small><span class="vs">vs 206</span></p>
-        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Grip current in finished runs: 154 milliamps for the policy trained with feedback, 206 for the policy trained without, from its first 2 finished runs">
-          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:74.8%"></i></span><b>154 mA</b></div>
-          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:100%"></i></span><b>206 mA</b></div>
+        <p class="num">−32<small>%</small></p>
+        <div class="cmp" style="--nw:10.6em" role="img" aria-label="Policy grip current on chips: 154 milliamps when trained on feedback-on demonstrations, 227 when trained on feedback-off demonstrations">
+          <div class="on"><span class="n">Trained with feedback</span><span class="track"><i style="--v:67.7%"></i></span><b>154 mA</b></div>
+          <div class="off"><span class="n">Trained without</span><span class="track"><i style="--v:100%"></i></span><b>227 mA</b></div>
         </div>
-        <p class="say">Median over finished runs: 15 for the first policy, the first 2 for the second. Their demonstrations: 150 and 276 mA.</p>
+        <p class="say">Over the pinches that carried a chip in finished runs, p &lt; 0.01. The demonstrations they learned from: 150 and 276 mA.</p>
       </div>
     </div>
 
